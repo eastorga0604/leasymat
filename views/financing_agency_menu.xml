@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Menú principal para Financing Agencies -->
+    <menuitem id="menu_financing_agency_root" 
+              name="Financing Agencies" 
+              parent="sale.sale_menu_root" 
+              sequence="20" />
+
+    <!-- Acción para mostrar Financing Agencies -->
+    <record id="action_financing_agency" model="ir.actions.act_window">
+        <field name="name">Financing Agencies</field>
+        <field name="res_model">financing.agency</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Submenú para administrar agencias -->
+    <menuitem id="menu_financing_agency" 
+              name="Manage Agencies" 
+              parent="menu_financing_agency_root" 
+              action="action_financing_agency" />
+</odoo>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Personalización de la vista de formulario -->
+    <record id="view_order_form_installments" model="ir.ui.view">
+        <field name="name">sale.order.installments</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+<xpath expr="//field[@name='payment_term_id']" position="attributes">
+    <attribute name="invisible">1</attribute>
+</xpath>
+
+
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="installments"/>
+                <field name="financing_duration"/>
+                <field name="financing_start_date"/>
+                <field name="financing_end_date" readonly="1"/>
+                <field name="financing_agency_id"/>
+                <field name="include_standard_warranty"/>
+                <field name="warranty_start_date"/>
+                <field name="warranty_end_date"/>
+                <field name="include_full_service_warranty"/>
+                <field name="full_service_warranty_percentage"/>
+                <field name="full_service_warranty_cost" readonly="1"/>
+            </xpath>
+
+
+            <!-- Agregar el campo full_service_warranty_cost en la sección de totales -->
+            <xpath expr="//group[@name='sale_total']" position="before">
+                <group>
+                    <field name="full_service_warranty_cost" readonly="1"/>
+                    <field name="amount_total_with_warranty" readonly="1" string="Total con Garantía"/>
+                    
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Personalización de la vista de lista -->
+    <record id="view_order_tree_installments" model="ir.ui.view">
+        <field name="name">sale.order.tree.installments</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_quotation_tree_with_onboarding"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="installments"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
