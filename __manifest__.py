@@ -10,11 +10,7 @@
         'security/ir.model.access.csv',
         'views/sale_order_views.xml',
         'views/financing_agency_menu.xml',
-        'views/account_move_views.xml',
-        'i18n/es.po',  # <-- add the translations
-        'i18n/fr.po',
-        'i18n/en.po',
-        'i18n/de.po',
+        'views/account_move_views.xml'
     ],
     'controllers': [
         'controllers/main.py',
