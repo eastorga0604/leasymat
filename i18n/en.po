@@ -1,0 +1,4 @@
+#. module: leasymat
+#: code:addons/leasymat/static/src/js/kanban_quick_create_patch.js:0
+msgid "Create New Client"
+msgstr "Create New Client"
