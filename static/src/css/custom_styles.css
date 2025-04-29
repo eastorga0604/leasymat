@@ -1,0 +1,11 @@
+
+/* Fully hide the "Individual" radio option block */
+div.form-check.o_radio_item:has(input#radio_field_0_person) {
+    display: none !important;
+}
+
+/* Hide the 'Individual' radio button option */
+label[for*="radio_field_0_person"],
+#radio_field_0_person {
+    display: none !important;
+}

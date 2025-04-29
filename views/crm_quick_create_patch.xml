@@ -1,0 +1,15 @@
+<odoo>
+  <data>
+    <record id="view_partner_form_inherit_leasymat" model="ir.ui.view">
+      <field name="name">res.partner.form.leasymat</field>
+      <field name="model">res.partner</field>
+      <field name="inherit_id" ref="base.view_partner_form"/> <!-- important -->
+      <field name="arch" type="xml">
+
+        <!-- Remove Tags -->
+        <xpath expr="//field[@name='category_id']" position="replace"/>
+
+      </field>
+    </record>
+  </data>
+</odoo>
