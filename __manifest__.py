@@ -12,6 +12,7 @@
         'views/financing_agency_menu.xml',
         'views/account_move_views.xml',
         'views/crm_quick_create_patch.xml',
+        'views/create_lead_oportunity.xml',
     ],
     'controllers': [
         'controllers/main.py',
@@ -19,7 +20,8 @@
     ],
     'assets': {
         'web.assets_backend': [
-            '/leasymat/static/src/js/kanban_quick_create_patch.js',  # <-- ADD THIS
+            '/leasymat/static/src/js/kanban_quick_create_patch.js',  # <-- ADD THIS,
+            '/leasymat/static/src/js/crm_quick_create_redirect.js',
             '/leasymat/static/src/css/custom_styles.css',
         ],
     },

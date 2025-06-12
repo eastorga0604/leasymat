@@ -1,0 +1,21 @@
+<odoo>
+  <data>
+    <record id="crm_quick_create_opportunity_form_leasymat" model="ir.ui.view">
+      <field name="name">crm.lead.quick.create.opportunity.form.leasymat</field>
+      <field name="model">crm.lead</field>
+      <field name="inherit_id" ref="crm.quick_create_opportunity_form"/> <!-- or update to the actual form view ID -->
+      <field name="arch" type="xml">
+
+        <!-- Remove Expected Revenue -->
+        <xpath expr="//field[@name='expected_revenue']" position="replace"/>
+
+        <!-- Remove Priority -->
+        <xpath expr="//field[@name='priority']" position="replace"/>
+
+        <!-- Optional: Remove the label if still visible -->
+        <xpath expr="//label[@for='expected_revenue']" position="replace"/>
+
+      </field>
+    </record>
+  </data>
+</odoo>
