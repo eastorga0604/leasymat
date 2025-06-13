@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+
+
     <!-- Personalización de la vista de formulario -->
     <record id="view_order_form_installments" model="ir.ui.view">
         <field name="name">sale.order.installments</field>
@@ -7,9 +9,21 @@
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
 
-<xpath expr="//field[@name='payment_term_id']" position="attributes">
-    <attribute name="invisible">1</attribute>
-</xpath>
+
+        <!-- Hide "Other Info" tab -->
+        <xpath expr="//page[@name='other_information']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+
+        <!-- Hide "Customer Signature" tab -->
+        <xpath expr="//page[@name='customer_signature']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
+
+
+        <xpath expr="//field[@name='payment_term_id']" position="attributes">
+            <attribute name="invisible">1</attribute>
+        </xpath>
 
 
             <xpath expr="//field[@name='payment_term_id']" position="after">
@@ -24,6 +38,7 @@
                 <field name="include_full_service_warranty"/>
                 <field name="full_service_warranty_percentage"/>
                 <field name="full_service_warranty_cost" readonly="1"/>
+                <field name="transport"/>
             </xpath>
 
 

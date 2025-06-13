@@ -84,6 +84,10 @@ class SaleOrder(models.Model):
         store=True,
         help="Total amount including the Full Service Warranty cost."
     )
+
+    transport = fields.Float(string="Transport",
+                             help="Transport cost for the order.",
+                             default=0.0)
     @api.onchange('include_standard_warranty')
     def _onchange_include_standard_warranty(self):
         if self.include_standard_warranty:
