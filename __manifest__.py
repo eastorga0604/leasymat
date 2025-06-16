@@ -20,9 +20,12 @@
     ],
     'assets': {
         'web.assets_backend': [
-            '/leasymat/static/src/js/kanban_quick_create_patch.js',  # <-- ADD THIS,
-            '/leasymat/static/src/js/crm_quick_create_redirect.js',
-            '/leasymat/static/src/css/custom_styles.css',
+            #'leasymat/static/src/js/kanban_quick_create_patch.js',  # <-- ADD THIS,
+            #'leasymat/static/src/js/crm_quick_create_redirect.js',
+            #'leasymat/static/src/css/custom_styles.css',
+            'custom_woocommerce_api/static/src/js/kanban_quick_create_patch.js',  # <-- ADD THIS,
+            'custom_woocommerce_api/static/src/js/crm_quick_create_redirect.js',
+            'custom_woocommerce_api/static/src/css/custom_styles.css',
         ],
     },
     'installable': True,
