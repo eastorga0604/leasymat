@@ -1,6 +1,7 @@
 from odoo import models, fields,api
 from datetime import timedelta
 import logging
+from odoo.tools.float_utils import float_round
 
 
 _logger = logging.getLogger(__name__)
@@ -88,6 +89,38 @@ class SaleOrder(models.Model):
     transport = fields.Float(string="Transport",
                              help="Transport cost for the order.",
                              default=0.0)
+
+    price_quote = fields.Float(string="Price Quote",
+                                    help="Payment amount for the quote.",
+                                    default=0.0)
+
+    margin_amount = fields.Monetary(
+        string="Margin (€)",
+        compute="_compute_margin",
+        store=True,
+        help="Total margin in currency."
+    )
+
+    margin_percent = fields.Float(
+        string="Margin (%)",
+        compute="_compute_margin",
+        store=True,
+        help="Margin as a percentage of untaxed amount."
+    )
+
+    @api.depends('price_quote', 'amount_total_with_warranty')
+    def _compute_margin(self):
+        for order in self:
+            total_sales = order.amount_total_with_warranty or 0.0
+            total_cost = order.price_quote or 0.0
+            currency = order.currency_id
+
+            margin = total_sales - total_cost
+            order.margin_amount = float_round(margin, precision_rounding=currency.rounding)
+            order.margin_percent = (
+                float_round((margin / total_sales) * 100, 2)
+                if total_sales else 0.0
+            )
     @api.onchange('include_standard_warranty')
     def _onchange_include_standard_warranty(self):
         if self.include_standard_warranty:

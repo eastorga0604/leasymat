@@ -17,6 +17,10 @@ class WooCommerceAPIController(http.Controller):
             shipping_data = order_data.get('shipping', {}).get('address', {})
             installments = order_data.get('quote', 0)
 
+            metadata = order_data.get('metadata', {})
+
+            price_quote = metadata.get('price_quote', 0.0)
+
             if not customer_data or not products_data:
                 return {"status": "error", "message": "Missing required fields: customer or products"}
 
@@ -39,14 +43,16 @@ class WooCommerceAPIController(http.Controller):
                     'product_id': odoo_product.id,
                     'product_uom_qty': product.get('quantity', 1),
                     'price_unit': odoo_product.lst_price,
+                    'purchase_price': odoo_product.standard_price
                 }))
 
             # Crear la orden de venta
             sale_order = request.env['sale.order'].sudo().create({
                 'partner_id': partner.id,
                 'order_line': order_lines,
-                'note': order_data.get('metadata', {}).get('order_note', ''),
+                'note': metadata.get('order_note', ''),
                 'installments': installments,
+                'price_quote': price_quote,
             })
 
             # Agregar dirección de envío si aplica
