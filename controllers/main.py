@@ -42,8 +42,7 @@ class WooCommerceAPIController(http.Controller):
                 order_lines.append((0, 0, {
                     'product_id': odoo_product.id,
                     'product_uom_qty': product.get('quantity', 1),
-                    'price_unit': odoo_product.lst_price,
-                    'purchase_price': odoo_product.standard_price
+                    'price_unit': odoo_product.lst_price
                 }))
 
             # Crear la orden de venta
