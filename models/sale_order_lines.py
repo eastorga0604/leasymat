@@ -14,6 +14,7 @@ PALIER_COEFFICIENTS = {
     "palier-1-000-000": { "12": 9.008, "24": 4.816, "36": 3.293, "48": 2.576, "60": 2.100 },
 }
 
+
 class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
@@ -39,22 +40,11 @@ class SaleOrderLine(models.Model):
         store=True
     )
 
-    installments_snapshot = fields.Char(
-        string="Installments Snapshot",
-        compute='_compute_installments_snapshot',
-        store=True
-    )
-
-    @api.depends('order_id.installments')
-    def _compute_installments_snapshot(self):
-        for line in self:
-            line.installments_snapshot = line.order_id.installments
-
-    @api.depends('display_price_quote', 'installments_snapshot', 'currency_id')
+    @api.depends('price_quote', 'currency_id', 'order_id.installments')
     def _compute_price_subtotal_custom(self):
         for line in self:
             try:
-                months = int(line.installments_snapshot or 0)
+                months = int(line.order_id.installments or 0)
                 subtotal = (line.price_quote or 0.0) * months
                 line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
             except Exception:
@@ -62,18 +52,18 @@ class SaleOrderLine(models.Model):
 
     @api.onchange('include_full_service_warranty', 'order_id.installments')
     def _onchange_trigger_quote_recalc(self):
-        self._compute_price_quote()
+        installments = self.order_id.installments or '12'
+        self.with_context(installments=installments)._compute_price_quote()
 
-    @api.depends('installments_snapshot', 'price_unit', 'include_full_service_warranty',
+    @api.depends('price_unit', 'include_full_service_warranty',
                  'order_id.full_service_warranty_percentage', 'order_id.installments')
     def _compute_price_quote(self):
         for line in self:
             total = (line.price_unit or 0.0) * 2.1
-            months = line.installments_snapshot or '12'
+            months = self.env.context.get('installments') or line.order_id.installments or '12'
 
             _logger.info(f"[QUOTE] Line {line.id} - Order installments: {line.order_id.installments} - Used months: {months}")
 
-            # Determine palier
             if total <= 500:
                 palier = 'palier-500'
             elif total <= 1500:
@@ -98,7 +88,6 @@ class SaleOrderLine(models.Model):
                     warranty_extra = base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
 
                 final_quote = float_round(base_quote + warranty_extra, precision_digits=2)
-
                 line.price_quote = final_quote
                 line.display_price_quote = final_quote
 
