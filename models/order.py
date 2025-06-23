@@ -45,11 +45,18 @@ class SaleOrder(models.Model):
     @api.depends('order_line.price_quote', 'amount_total')
     def _compute_margin(self):
         for order in self:
-            total_sales = order.amount_total or 0.0
-            total_cost = sum(line.price_quote for line in order.order_line if line.price_quote)
-            margin = total_sales - total_cost
-            order.margin_amount = float_round(margin, precision_rounding=order.currency_id.rounding)
-            order.margin_percent = float_round((margin / total_sales) * 100, 2) if total_sales else 0.0
+            total_quote = sum(line.price_subtotal for line in order.order_line)
+            total_cost = sum(
+                (line.product_id.lst_price or 0.0) for line in order.order_line
+            )
+            margin = total_quote - total_cost
+
+            currency = order.currency_id
+
+            order.margin_amount = float_round(margin, precision_rounding=currency.rounding)
+            order.margin_percent = (
+                float_round((margin / total_quote) * 100, 2) if total_quote else 0.0
+            )
 
     @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'transport')
     def _amount_all(self):
