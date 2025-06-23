@@ -1,7 +1,6 @@
-from odoo import models, fields,api
-from datetime import timedelta
-import logging
+from odoo import models, fields, api
 from odoo.tools.float_utils import float_round
+import logging
 
 _logger = logging.getLogger(__name__)
 
@@ -21,15 +20,58 @@ class SaleOrderLine(models.Model):
     price_quote = fields.Float(
         string="Monthly Quote",
         compute="_compute_price_quote",
-        store=True,
-        help="Monthly payment amount for this product based on selected installments."
+        store=False
     )
 
-    @api.depends('order_id.installments', 'price_unit')
+    display_price_quote = fields.Float(
+        string="Monthly Quote",
+        readonly=False
+    )
+
+    include_full_service_warranty = fields.Boolean(
+        string="Include Full Service Warranty",
+        default=False
+    )
+
+    price_subtotal = fields.Monetary(
+        string='Subtotal',
+        compute='_compute_price_subtotal_custom',
+        store=True
+    )
+
+    installments_snapshot = fields.Char(
+        string="Installments Snapshot",
+        compute='_compute_installments_snapshot',
+        store=True
+    )
+
+    @api.depends('order_id.installments')
+    def _compute_installments_snapshot(self):
+        for line in self:
+            line.installments_snapshot = line.order_id.installments
+
+    @api.depends('display_price_quote', 'installments_snapshot', 'currency_id')
+    def _compute_price_subtotal_custom(self):
+        for line in self:
+            try:
+                months = int(line.installments_snapshot or 0)
+                subtotal = (line.price_quote or 0.0) * months
+                line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
+            except Exception:
+                line.price_subtotal = 0.0
+
+    @api.onchange('include_full_service_warranty', 'order_id.installments')
+    def _onchange_trigger_quote_recalc(self):
+        self._compute_price_quote()
+
+    @api.depends('installments_snapshot', 'price_unit', 'include_full_service_warranty',
+                 'order_id.full_service_warranty_percentage', 'order_id.installments')
     def _compute_price_quote(self):
         for line in self:
-            total = (line.price_unit or 0.0) * 2.1  # Assuming a fixed factor of 2.1 for total calculation
-            months = line.order_id.installments or '12'
+            total = (line.price_unit or 0.0) * 2.1
+            months = line.installments_snapshot or '12'
+
+            _logger.info(f"[QUOTE] Line {line.id} - Order installments: {line.order_id.installments} - Used months: {months}")
 
             # Determine palier
             if total <= 500:
@@ -49,8 +91,18 @@ class SaleOrderLine(models.Model):
 
             try:
                 coef = PALIER_COEFFICIENTS[palier][months]
-                line.price_quote = float_round((total * coef) / 100.0, precision_digits=2)
-            except Exception:
-                line.price_quote = 0.0
+                base_quote = (total * coef) / 100.0
 
-        _logger.debug(f"Computed price_quote for line {line.id}: {line.price_quote} (total: {total}, months: {months}, palier: {palier})")
+                warranty_extra = 0.0
+                if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
+                    warranty_extra = base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
+
+                final_quote = float_round(base_quote + warranty_extra, precision_digits=2)
+
+                line.price_quote = final_quote
+                line.display_price_quote = final_quote
+
+            except Exception as e:
+                _logger.error(f"Error computing quote for line {line.id}: {e}")
+                line.price_quote = 0.0
+                line.display_price_quote = 0.0
