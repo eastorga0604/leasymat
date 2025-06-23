@@ -6,6 +6,8 @@ from odoo.tools.float_utils import float_round
 
 _logger = logging.getLogger(__name__)
 
+
+
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
@@ -90,10 +92,6 @@ class SaleOrder(models.Model):
                              help="Transport cost for the order.",
                              default=0.0)
 
-    price_quote = fields.Float(string="Price Quote",
-                                    help="Payment amount for the quote.",
-                                    default=0.0)
-
     margin_amount = fields.Monetary(
         string="Margin (€)",
         compute="_compute_margin",
@@ -108,11 +106,11 @@ class SaleOrder(models.Model):
         help="Margin as a percentage of untaxed amount."
     )
 
-    @api.depends('price_quote', 'amount_total_with_warranty')
+    @api.depends('order_line.price_quote', 'amount_total_with_warranty')
     def _compute_margin(self):
         for order in self:
             total_sales = order.amount_total_with_warranty or 0.0
-            total_cost = order.price_quote or 0.0
+            total_cost = sum(line.price_quote for line in order.order_line if line.price_quote) or 0.0
             currency = order.currency_id
 
             margin = total_sales - total_cost
@@ -120,6 +118,26 @@ class SaleOrder(models.Model):
             order.margin_percent = (
                 float_round((margin / total_sales) * 100, 2)
                 if total_sales else 0.0
+            )
+
+    @api.depends('order_line.price_total', 'transport')
+    def _amount_all(self):
+        """
+        Override the default computation to include the transport value.
+        """
+        for order in self:
+            amount_untaxed = amount_tax = 0.0
+            for line in order.order_line:
+                amount_untaxed += line.price_subtotal
+                amount_tax += line.price_tax
+
+            order.amount_untaxed = amount_untaxed
+            order.amount_tax = amount_tax
+
+            # Include transport in total
+            order.amount_total = float_round(
+                amount_untaxed + amount_tax + order.transport,
+                precision_rounding=order.currency_id.rounding
             )
     @api.onchange('include_standard_warranty')
     def _onchange_include_standard_warranty(self):

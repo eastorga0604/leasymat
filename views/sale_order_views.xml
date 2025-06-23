@@ -41,6 +41,15 @@
                 <field name="transport"/>
             </xpath>
 
+            <!-- Replace price_unit column with price_quote -->
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
+                <field name="price_quote" string="Payment"/>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
+                <attribute name="invisible">1</attribute>
+                <attribute name="column_invisible">1</attribute>
+            </xpath>
+
 
             <!-- Agregar el campo full_service_warranty_cost en la sección de totales -->
             <xpath expr="//group[@name='sale_total']" position="before">
@@ -66,6 +75,4 @@
             </xpath>
         </field>
     </record>
-
-
 </odoo>

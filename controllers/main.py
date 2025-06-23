@@ -42,7 +42,8 @@ class WooCommerceAPIController(http.Controller):
                 order_lines.append((0, 0, {
                     'product_id': odoo_product.id,
                     'product_uom_qty': product.get('quantity', 1),
-                    'price_unit': odoo_product.lst_price
+                    'price_unit': odoo_product.lst_price,
+                    'price_quote': price_quote
                 }))
 
             # Crear la orden de venta
@@ -50,8 +51,7 @@ class WooCommerceAPIController(http.Controller):
                 'partner_id': partner.id,
                 'order_line': order_lines,
                 'note': metadata.get('order_note', ''),
-                'installments': installments,
-                'price_quote': price_quote,
+                'installments': installments
             })
 
             # Agregar dirección de envío si aplica
