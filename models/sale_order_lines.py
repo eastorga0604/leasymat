@@ -40,12 +40,29 @@ class SaleOrderLine(models.Model):
         store=True
     )
 
+    @api.model
+    def create(self, vals):
+        # Safety check: make sure needed fields exist
+        price_quote = vals.get('display_price_quote') or vals.get('price_quote') or 0.0
+        qty = vals.get('product_uom_qty') or 1.0
+
+        # Fallback currency rounding
+        currency = self.env.company.currency_id
+        rounding = currency.rounding if currency else 0.01
+
+        # Compute subtotal
+        subtotal = float_round(price_quote * qty, precision_rounding=rounding)
+        vals['price_subtotal'] = subtotal
+
+        return super().create(vals)
+
     @api.depends('price_quote', 'currency_id', 'order_id.installments')
     def _compute_price_subtotal_custom(self):
+        _logger.info(f"[QUOTE] Recalculating price subtotal for order lines in order {self.order_id.name}")
         for line in self:
             try:
-                months = int(line.order_id.installments or 0)
-                subtotal = (line.price_quote or 0.0) * months
+                #months = int(line.order_id.installments or 0)
+                subtotal = (line.price_quote or 0.0) * line.product_uom_qty
                 line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
             except Exception:
                 line.price_subtotal = 0.0
