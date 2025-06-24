@@ -19,7 +19,10 @@ class WooCommerceAPIController(http.Controller):
 
             metadata = order_data.get('metadata', {})
 
-            price_quote = metadata.get('price_quote', 0.0)
+            try:
+                price_quote = float(metadata.get('price_quote', 0.0))
+            except (TypeError, ValueError):
+                price_quote = 0.0
 
             if not customer_data or not products_data:
                 return {"status": "error", "message": "Missing required fields: customer or products"}
