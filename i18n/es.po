@@ -6,40 +6,103 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-06-25 00:00+0000\n"
-"PO-Revision-Date: 2025-06-25 00:00+0000\n"
-"Language: es\n"
+"POT-Creation-Date: 2025-06-25 21:38+0000\n"
+"PO-Revision-Date: 2025-06-25 21:38+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: es\n"
 
 #. module: custom_woocommerce_api
-#: code:addons/custom_woocommerce_api/static/src/js/kanban_quick_create_patch.js:0
-msgid "Create New Client"
-msgstr "Crear nuevo cliente"
+#: model:ir.model.fields.selection,name:custom_woocommerce_api.selection__sale_order__installments__24
+msgid "24"
+msgstr "24"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__price_quote
+#: model:ir.model.fields.selection,name:custom_woocommerce_api.selection__sale_order__installments__36
+msgid "36"
+msgstr "36"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields.selection,name:custom_woocommerce_api.selection__sale_order__installments__48
+msgid "48"
+msgstr "48"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_custom
+msgid "Custom Info"
+msgstr "Información Personalizada"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_custom
+msgid "Customer Financed"
+msgstr "Cliente Financiado"
+
+#. module: custom_woocommerce_api
+#: model:ir.actions.act_window,name:custom_woocommerce_api.action_financing_agency
+#: model:ir.ui.menu,name:custom_woocommerce_api.menu_financing_agency_root
+msgid "Financing Agencies"
+msgstr "Agencias de Financiamiento"
+
+#. module: custom_woocommerce_api
+#: model:ir.model,name:custom_woocommerce_api.model_financing_agency
+msgid "Financing Agency"
+msgstr "Agencia de Financiamiento"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Include Warranty"
+msgstr "Incluir Garantía"
+
+#. module: custom_woocommerce_api
+#: model:ir.model,name:custom_woocommerce_api.model_crm_lead
+msgid "Lead/Opportunity"
+msgstr "Prospecto/Oportunidad"
+
+#. module: custom_woocommerce_api
+#: model:ir.ui.menu,name:custom_woocommerce_api.menu_financing_agency
+msgid "Manage Agencies"
+msgstr "Administrar Agencias"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
 msgid "Monthly Quote"
-msgstr "Cuota mensual"
+msgstr "Cuota Mensual"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__display_price_quote
-msgid "Monthly Quote"
-msgstr "Cuota mensual"
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_custom
+msgid "Observations"
+msgstr "Observaciones"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__include_full_service_warranty
-msgid "Include Full Service Warranty"
-msgstr "Incluir garantía de servicio completo"
+#: model:ir.model,name:custom_woocommerce_api.model_sale_order
+msgid "Sales Order"
+msgstr "Orden de Venta"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_amount
-msgid "Margin (€)"
-msgstr "Margen (€)"
+#: model:ir.model,name:custom_woocommerce_api.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Línea de Orden de Venta"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
-msgid "Margin (%)"
-msgstr "Margen (%)"
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__price_subtotal
+msgid "Subtotal"
+msgstr "Subtotal"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_tax
+msgid "Taxes"
+msgstr "Impuestos"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total
+msgid "Total"
+msgstr "Total"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_untaxed
+msgid "Untaxed Amount"
+msgstr "Importe sin Impuestos"
