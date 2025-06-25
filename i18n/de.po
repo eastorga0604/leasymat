@@ -1,4 +1,45 @@
-#. module: leasymat
-#: code:addons/leasymat/static/src/js/kanban_quick_create_patch.js:0
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* custom_woocommerce_api
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 17.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2025-06-25 00:00+0000\n"
+"PO-Revision-Date: 2025-06-25 00:00+0000\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: custom_woocommerce_api
+#: code:addons/custom_woocommerce_api/static/src/js/kanban_quick_create_patch.js:0
 msgid "Create New Client"
 msgstr "Neuen Kunden erstellen"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__price_quote
+msgid "Monthly Quote"
+msgstr "Monatliche Rate"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__display_price_quote
+msgid "Monthly Quote"
+msgstr "Monatliche Rate"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__include_full_service_warranty
+msgid "Include Full Service Warranty"
+msgstr "Vollgarantie einschließen"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_amount
+msgid "Margin (€)"
+msgstr "Marge (€)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
+msgid "Margin (%)"
+msgstr "Marge (%)"

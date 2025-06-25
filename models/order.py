@@ -9,11 +9,11 @@ class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
     installments = fields.Selection([
-        ('12', '12'),
         ('24', '24'),
+        ('36', '36'),
         ('48', '48'),
         ('60', '60')
-    ], string="Quotas", default='12', help="Number of quotas for payment.")
+    ], string="Quotas", default='24', help="Number of quotas for payment.")
 
     financing_duration = fields.Integer(string='Financing Duration (Months)')
     financing_start_date = fields.Date(string='Start Date')
@@ -49,13 +49,15 @@ class SaleOrder(models.Model):
             total_cost = sum(
                 (line.product_id.lst_price or 0.0) for line in order.order_line
             )
-            margin = total_quote - total_cost
+            months = int(order.installments or '1')
+            full_quote = total_quote * months
+            margin = full_quote - total_cost
 
             currency = order.currency_id
 
             order.margin_amount = float_round(margin, precision_rounding=currency.rounding)
             order.margin_percent = (
-                float_round((margin / total_quote) * 100, 2) if total_quote else 0.0
+                float_round((margin / full_quote) * 100, 2) if total_quote else 0.0
             )
 
     @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'transport')
@@ -63,6 +65,7 @@ class SaleOrder(models.Model):
         for order in self:
             amount_untaxed = sum(line.price_subtotal for line in order.order_line)
             amount_tax = sum(line.price_tax for line in order.order_line)
+            _logger.info(f"Shows amounts for order {amount_untaxed}")
             total = amount_untaxed + amount_tax + order.transport
 
             order.amount_untaxed = float_round(amount_untaxed, precision_rounding=order.currency_id.rounding)

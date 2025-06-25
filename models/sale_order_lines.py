@@ -56,28 +56,52 @@ class SaleOrderLine(models.Model):
 
         return super().create(vals)
 
+    @api.depends('price_quote', 'product_uom_qty', 'currency_id')
+    def _compute_amount(self):
+        for line in self:
+            try:
+                subtotal = float_round((line.price_quote or 0.0) * line.product_uom_qty,
+                                       precision_rounding=line.currency_id.rounding)
+                line.price_subtotal = subtotal
+                line.price_total = subtotal
+            except Exception as e:
+                _logger.error(f"[QUOTE] Error in _compute_amount for line {line.id}: {e}")
+                line.price_subtotal = 0.0
+                line.price_total = 0.0
+
     @api.depends('price_quote', 'currency_id', 'order_id.installments')
     def _compute_price_subtotal_custom(self):
-        _logger.info(f"[QUOTE] Recalculating price subtotal for order lines in order {self.order_id.name}")
         for line in self:
             try:
                 #months = int(line.order_id.installments or 0)
                 subtotal = (line.price_quote or 0.0) * line.product_uom_qty
                 line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
+                line.price_total = line.price_subtotal  # Assuming no tax is applied here
+
+                _logger.info(
+                    f"[QUOTE] Line {line.id} - Subtotal computed: {line.price_subtotal} for quantity {line.product_uom_qty} and price quote {line.price_quote}")
             except Exception:
                 line.price_subtotal = 0.0
 
-    @api.onchange('include_full_service_warranty', 'order_id.installments')
+    @api.onchange('product_uom_qty', 'display_price_quote')
+    def _onchange_qty_or_quote(self):
+        self.price_quote = self.display_price_quote
+        self._compute_price_subtotal_custom()
+        self._compute_amount()
+
+    @api.onchange('include_full_service_warranty', 'order_id.installments', 'product_uom_qty')
     def _onchange_trigger_quote_recalc(self):
-        installments = self.order_id.installments or '12'
+        installments = self.order_id.installments or '24'
         self.with_context(installments=installments)._compute_price_quote()
 
-    @api.depends('price_unit', 'include_full_service_warranty',
+
+
+    @api.depends('price_unit','include_full_service_warranty',
                  'order_id.full_service_warranty_percentage', 'order_id.installments')
     def _compute_price_quote(self):
         for line in self:
             total = (line.price_unit or 0.0) * 2.1
-            months = self.env.context.get('installments') or line.order_id.installments or '12'
+            months = self.env.context.get('installments') or line.order_id.installments or '24'
 
             _logger.info(f"[QUOTE] Line {line.id} - Order installments: {line.order_id.installments} - Used months: {months}")
 
