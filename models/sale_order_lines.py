@@ -56,6 +56,20 @@ class SaleOrderLine(models.Model):
 
         return super().create(vals)
 
+    @api.depends('price_quote', 'product_uom_qty', 'tax_id')
+    def _compute_tax_id(self):
+        for line in self:
+            taxes = line.tax_id.compute_all(
+                line.price_quote,
+                currency=line.order_id.currency_id,
+                quantity=line.product_uom_qty,
+                product=line.product_id,
+                partner=line.order_id.partner_shipping_id
+            )
+            # Inject custom total for tax computation
+            line.price_tax = float_round(taxes['total_included'] - taxes['total_excluded'],
+                                         precision_rounding=line.currency_id.rounding)
+
     @api.depends('price_quote', 'product_uom_qty', 'currency_id')
     def _compute_amount(self):
         for line in self:
