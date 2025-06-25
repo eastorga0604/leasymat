@@ -106,3 +106,58 @@ msgstr "Total"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_untaxed
 msgid "Untaxed Amount"
 msgstr "Untaxed Amount"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_untaxed
+msgid "Untaxed Amount"
+msgstr "Importe sin Impuestos"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__installments
+msgid "Quotas"
+msgstr "Quotas"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_start_date
+msgid "Start Date"
+msgstr "Start Date"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_end_date
+msgid "End Date"
+msgstr "End Date"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_agency_id
+msgid "Financing Agency"
+msgstr "Financing Agency"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_start_date
+msgid "Warranty Start Date"
+msgstr "Warranty Start Date"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_end_date
+msgid "Warranty End Date"
+msgstr "Warranty End Date"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__full_service_warranty_percentage
+msgid "Full Service Warranty Percentage"
+msgstr "Full Service Warranty Percentage"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__transport
+msgid "Transport"
+msgstr "Transport"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_amount
+msgid "Margin (€)"
+msgstr "Margin (€)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
+msgid "Margin (%)"
+msgstr "Margin (%)"

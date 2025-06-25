@@ -103,6 +103,50 @@ msgid "Total"
 msgstr "Total"
 
 #. module: custom_woocommerce_api
-#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_untaxed
-msgid "Untaxed Amount"
-msgstr "Importe sin Impuestos"
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__installments
+msgid "Quotas"
+msgstr "Cuotas"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_start_date
+msgid "Start Date"
+msgstr "Fecha de inicio"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_end_date
+msgid "End Date"
+msgstr "Fecha de finalización"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_agency_id
+msgid "Financing Agency"
+msgstr "Agencia de financiación"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_start_date
+msgid "Warranty Start Date"
+msgstr "Inicio de la garantía"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_end_date
+msgid "Warranty End Date"
+msgstr "Fin de la garantía"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__full_service_warranty_percentage
+msgid "Full Service Warranty Percentage"
+msgstr "Porcentaje de garantía total"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__transport
+msgid "Transport"
+msgstr "Transporte"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_amount
+msgid "Margin (€)"
+msgstr "Margen (€)"
+
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
+msgid "Margin (%)"
+msgstr "Margen (%)"

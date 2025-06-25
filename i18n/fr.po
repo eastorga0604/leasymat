@@ -106,3 +106,53 @@ msgstr "Total"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_untaxed
 msgid "Untaxed Amount"
 msgstr "Montant hors taxes"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__installments
+msgid "Quotas"
+msgstr "Quotas"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_start_date
+msgid "Start Date"
+msgstr "Date de début"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_end_date
+msgid "End Date"
+msgstr "Date de fin"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__financing_agency_id
+msgid "Financing Agency"
+msgstr "Agence de financement"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_start_date
+msgid "Warranty Start Date"
+msgstr "Date de début de garantie"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__warranty_end_date
+msgid "Warranty End Date"
+msgstr "Date de fin de garantie"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__full_service_warranty_percentage
+msgid "Full Service Warranty Percentage"
+msgstr "Pourcentage de garantie complète"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__transport
+msgid "Transport"
+msgstr "Transport"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_amount
+msgid "Margin (€)"
+msgstr "Marge (€)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
+msgid "Margin (%)"
+msgstr "Marge (%)"
