@@ -147,6 +147,7 @@ msgstr "Transporte"
 msgid "Margin (€)"
 msgstr "Margen (€)"
 
+#. module: custom_woocommerce_api
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
 msgid "Margin (%)"
 msgstr "Margen (%)"
