@@ -40,6 +40,7 @@ class SaleOrderLine(models.Model):
         store=True
     )
 
+
     @api.model
     def create(self, vals):
         # Safety check: make sure needed fields exist
@@ -100,18 +101,37 @@ class SaleOrderLine(models.Model):
     @api.onchange('product_uom_qty', 'display_price_quote')
     def _onchange_qty_or_quote(self):
         self.price_quote = self.display_price_quote
+        self._onchange_warranty_toggle()
         self._compute_price_subtotal_custom()
         self._compute_amount()
 
-    @api.onchange('include_full_service_warranty', 'order_id.installments', 'product_uom_qty')
+
+    @api.onchange('order_id.installments', 'product_uom_qty')
     def _onchange_trigger_quote_recalc(self):
         installments = self.order_id.installments or '24'
         self.with_context(installments=installments)._compute_price_quote()
 
+    @api.onchange('include_full_service_warranty', 'order_id.full_service_warranty_percentage')
+    def _onchange_warranty_toggle(self):
 
+        for line in self:
+            base_quote = line.display_price_quote or 0.0
+            warranty_pct = line.order_id.full_service_warranty_percentage or 0.0
 
-    @api.depends('price_unit','include_full_service_warranty',
-                 'order_id.full_service_warranty_percentage', 'order_id.installments')
+            if line.include_full_service_warranty:
+                # Add the warranty cost
+                extra = base_quote * (warranty_pct / 100.0)
+                final = float_round(base_quote + extra, precision_digits=2)
+            else:
+                # Subtract the warranty cost
+                extra = base_quote * (warranty_pct / (100.0 + warranty_pct))
+                final = float_round(base_quote - extra, precision_digits=2)
+
+            # Set both fields so the Monthly Quote column updates
+            line.price_quote = final
+            line.display_price_quote = final
+
+    @api.depends('price_unit', 'order_id.installments')
     def _compute_price_quote(self):
         for line in self:
             total = (line.price_unit or 0.0) * 2.1

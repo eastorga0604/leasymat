@@ -1,31 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-
-    <!-- Personalización de la vista de formulario -->
+    <!-- Customized Sale Order Form -->
     <record id="view_order_form_installments" model="ir.ui.view">
         <field name="name">sale.order.installments</field>
         <field name="model">sale.order</field>
         <field name="inherit_id" ref="sale.view_order_form"/>
         <field name="arch" type="xml">
 
+            <!-- Hide unnecessary tabs -->
+            <xpath expr="//page[@name='other_information']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-        <!-- Hide "Other Info" tab -->
-        <xpath expr="//page[@name='other_information']" position="attributes">
-            <attribute name="invisible">1</attribute>
-        </xpath>
+            <xpath expr="//page[@name='customer_signature']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-        <!-- Hide "Customer Signature" tab -->
-        <xpath expr="//page[@name='customer_signature']" position="attributes">
-            <attribute name="invisible">1</attribute>
-        </xpath>
+            <!-- Hide payment_term_id -->
+            <xpath expr="//field[@name='payment_term_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
 
-
-        <xpath expr="//field[@name='payment_term_id']" position="attributes">
-            <attribute name="invisible">1</attribute>
-        </xpath>
-
-
+            <!-- Add financing-related fields -->
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="installments"/>
                 <field name="financing_start_date"/>
@@ -37,38 +33,43 @@
                 <field name="transport"/>
             </xpath>
 
-            <!-- Replace price_unit column with price_quote -->
+            <!-- Editable bottom for order_line to allow form view per line -->
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="editable">bottom</attribute>
+            </xpath>
+
+            <!-- Add display_price_quote in the tree view -->
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
                 <field name="display_price_quote" string="Monthly Quote"/>
+                <field name="include_full_service_warranty" string="Include Warranty"/>
             </xpath>
 
-            <xpath expr="//field[@name='order_line']/tree/field[@name='display_price_quote']" position="after">
-                <field name="include_full_service_warranty" widget="boolean_toggle" string="Include Warranty"/>
-            </xpath>
-
+            <!-- Hide original price_unit in tree view -->
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="attributes">
                 <attribute name="invisible">1</attribute>
                 <attribute name="column_invisible">1</attribute>
                 <attribute name="readonly">1</attribute>
             </xpath>
 
+            <!-- FORM view for order_line for proper onchange -->
+            <xpath expr="//field[@name='order_line']/form" position="inside">
+                <group>
+                    <field name="display_price_quote"/>
+                    <field name="include_full_service_warranty" widget="boolean_toggle"/>
+                </group>
+            </xpath>
 
-
-
-            <!-- Agregar el campo full_service_warranty_cost en la sección de totales -->
+            <!-- Totals -->
             <xpath expr="//group[@name='sale_total']" position="before">
                 <group>
-                    <!--<field name="full_service_warranty_cost" readonly="1"/>
-                    <field name="amount_total_with_warranty" readonly="1" string="Total con Garantía"/>-->
                     <field name="margin_amount" readonly="1"/>
                     <field name="margin_percent" readonly="1"/>
-                    
                 </group>
             </xpath>
         </field>
     </record>
 
-    <!-- Personalización de la vista de lista -->
+    <!-- Add installments to tree view -->
     <record id="view_order_tree_installments" model="ir.ui.view">
         <field name="name">sale.order.tree.installments</field>
         <field name="model">sale.order</field>
