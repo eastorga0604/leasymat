@@ -19,19 +19,30 @@ class SaleOrderLine(models.Model):
     _inherit = 'sale.order.line'
 
     price_quote = fields.Float(
-        string="Monthly Quote",
+        string="Auto Monthly Quote",
         compute="_compute_price_quote",
         store=False
     )
 
     display_price_quote = fields.Float(
-        string="Monthly Quote",
+        string="Auto Monthly Quote (Visible)",
         readonly=False
+    )
+
+    manual_price_quote = fields.Float(
+        string="Manual Monthly Quote",
+        help="Overrides the automatically calculated monthly quote if set."
     )
 
     include_full_service_warranty = fields.Boolean(
         string="Include Full Service Warranty",
         default=False
+    )
+
+    effective_price_quote = fields.Float(
+        string="Monthly Quote (Final)",
+        compute="_compute_effective_price_quote",
+        store=False
     )
 
     price_subtotal = fields.Monetary(
@@ -41,103 +52,27 @@ class SaleOrderLine(models.Model):
     )
 
 
+    # Create method
     @api.model
     def create(self, vals):
-        # Safety check: make sure needed fields exist
-        price_quote = vals.get('display_price_quote') or vals.get('price_quote') or 0.0
+        manual = vals.get('manual_price_quote')
+        auto = vals.get('display_price_quote') or vals.get('price_quote') or 0.0
         qty = vals.get('product_uom_qty') or 1.0
-
-        # Fallback currency rounding
         currency = self.env.company.currency_id
         rounding = currency.rounding if currency else 0.01
-
-        # Compute subtotal
-        subtotal = float_round(price_quote * qty, precision_rounding=rounding)
+        chosen_quote = manual if manual else auto
+        subtotal = float_round(chosen_quote * qty, precision_rounding=rounding)
         vals['price_subtotal'] = subtotal
-
         return super().create(vals)
 
-    @api.depends('price_quote', 'product_uom_qty', 'tax_id')
-    def _compute_tax_id(self):
-        for line in self:
-            taxes = line.tax_id.compute_all(
-                line.price_quote,
-                currency=line.order_id.currency_id,
-                quantity=line.product_uom_qty,
-                product=line.product_id,
-                partner=line.order_id.partner_shipping_id
-            )
-            # Inject custom total for tax computation
-            line.price_tax = float_round(taxes['total_included'] - taxes['total_excluded'],
-                                         precision_rounding=line.currency_id.rounding)
 
-    @api.depends('price_quote', 'product_uom_qty', 'currency_id')
-    def _compute_amount(self):
-        for line in self:
-            try:
-                subtotal = float_round((line.price_quote or 0.0) * line.product_uom_qty,
-                                       precision_rounding=line.currency_id.rounding)
-                line.price_subtotal = subtotal
-                line.price_total = subtotal
-            except Exception as e:
-                _logger.error(f"[QUOTE] Error in _compute_amount for line {line.id}: {e}")
-                line.price_subtotal = 0.0
-                line.price_total = 0.0
-
-    @api.depends('price_quote', 'currency_id', 'order_id.installments')
-    def _compute_price_subtotal_custom(self):
-        for line in self:
-            try:
-                #months = int(line.order_id.installments or 0)
-                subtotal = (line.price_quote or 0.0) * line.product_uom_qty
-                line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
-                line.price_total = line.price_subtotal  # Assuming no tax is applied here
-
-                _logger.info(
-                    f"[QUOTE] Line {line.id} - Subtotal computed: {line.price_subtotal} for quantity {line.product_uom_qty} and price quote {line.price_quote}")
-            except Exception:
-                line.price_subtotal = 0.0
-
-    @api.onchange('product_uom_qty', 'display_price_quote')
-    def _onchange_qty_or_quote(self):
-        self.price_quote = self.display_price_quote
-        self._onchange_warranty_toggle()
-        self._compute_price_subtotal_custom()
-        self._compute_amount()
-
-
-    @api.onchange('order_id.installments', 'product_uom_qty')
-    def _onchange_trigger_quote_recalc(self):
-        installments = self.order_id.installments or '24'
-        self.with_context(installments=installments)._compute_price_quote()
-
-    @api.onchange('include_full_service_warranty', 'order_id.full_service_warranty_percentage')
-    def _onchange_warranty_toggle(self):
-
-        for line in self:
-            base_quote = line.display_price_quote or 0.0
-            warranty_pct = line.order_id.full_service_warranty_percentage or 0.0
-
-            if line.include_full_service_warranty:
-                # Add the warranty cost
-                extra = base_quote * (warranty_pct / 100.0)
-                final = float_round(base_quote + extra, precision_digits=2)
-            else:
-                # Subtract the warranty cost
-                extra = base_quote * (warranty_pct / (100.0 + warranty_pct))
-                final = float_round(base_quote - extra, precision_digits=2)
-
-            # Set both fields so the Monthly Quote column updates
-            line.price_quote = final
-            line.display_price_quote = final
-
-    @api.depends('price_unit', 'order_id.installments')
+    # Compute the automatic calculated quote
+    @api.depends('price_unit', 'include_full_service_warranty',
+                 'order_id.full_service_warranty_percentage', 'order_id.installments')
     def _compute_price_quote(self):
         for line in self:
             total = (line.price_unit or 0.0) * 2.1
-            months = self.env.context.get('installments') or line.order_id.installments or '24'
-
-            _logger.info(f"[QUOTE] Line {line.id} - Order installments: {line.order_id.installments} - Used months: {months}")
+            months = line.env.context.get('installments') or line.order_id.installments or '24'
 
             if total <= 500:
                 palier = 'palier-500'
@@ -157,16 +92,112 @@ class SaleOrderLine(models.Model):
             try:
                 coef = PALIER_COEFFICIENTS[palier][months]
                 base_quote = (total * coef) / 100.0
-
-                warranty_extra = 0.0
                 if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
-                    warranty_extra = base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
+                    extra = base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
+                    base_quote += extra
 
-                final_quote = float_round(base_quote + warranty_extra, precision_digits=2)
-                line.price_quote = final_quote
-                line.display_price_quote = final_quote
+                final = float_round(base_quote, precision_digits=2)
+                line.price_quote = final
+                line.display_price_quote = final
 
             except Exception as e:
-                _logger.error(f"Error computing quote for line {line.id}: {e}")
+                _logger.error(f"Error computing price_quote for line {line.id}: {e}")
                 line.price_quote = 0.0
                 line.display_price_quote = 0.0
+
+
+    # Compute effective price quote
+    @api.depends('manual_price_quote', 'price_quote', 'include_full_service_warranty',
+                 'order_id.full_service_warranty_percentage')
+    def _compute_effective_price_quote(self):
+        for line in self:
+            base = 0.0
+
+            if line.manual_price_quote:
+                base = line.manual_price_quote
+            else:
+                base = line.price_quote
+
+            # Always apply warranty if checked
+            if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
+                warranty_pct = line.order_id.full_service_warranty_percentage
+                base += base * (warranty_pct / 100.0)
+
+            line.effective_price_quote = float_round(base, precision_digits=2)
+
+
+    # Compute amounts
+    @api.depends('effective_price_quote', 'product_uom_qty', 'currency_id')
+    def _compute_amount(self):
+        for line in self:
+            try:
+                subtotal = float_round((line.effective_price_quote or 0.0) * line.product_uom_qty,
+                                       precision_rounding=line.currency_id.rounding)
+                line.price_subtotal = subtotal
+                line.price_total = subtotal
+            except Exception as e:
+                _logger.error(f"[QUOTE] Error in _compute_amount for line {line.id}: {e}")
+                line.price_subtotal = 0.0
+                line.price_total = 0.0
+
+
+    # Compute subtotal
+    @api.depends('effective_price_quote', 'product_uom_qty', 'currency_id')
+    def _compute_price_subtotal_custom(self):
+        for line in self:
+            try:
+                subtotal = (line.effective_price_quote or 0.0) * line.product_uom_qty
+                line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
+                line.price_total = line.price_subtotal
+            except Exception:
+                line.price_subtotal = 0.0
+
+
+    # Compute taxes
+    @api.depends('effective_price_quote', 'product_uom_qty', 'tax_id')
+    def _compute_tax_id(self):
+        for line in self:
+            taxes = line.tax_id.compute_all(
+                line.effective_price_quote,
+                currency=line.order_id.currency_id,
+                quantity=line.product_uom_qty,
+                product=line.product_id,
+                partner=line.order_id.partner_shipping_id
+            )
+            line.price_tax = float_round(taxes['total_included'] - taxes['total_excluded'],
+                                         precision_rounding=line.currency_id.rounding)
+
+
+    # Onchange for manual editing: clear warranty
+    @api.onchange('manual_price_quote')
+    def _onchange_manual_quote(self):
+        for line in self:
+            if line.manual_price_quote:
+                line.include_full_service_warranty = False
+
+
+    # Onchange qty or quote
+    @api.onchange('product_uom_qty', 'display_price_quote')
+    def _onchange_qty_or_quote(self):
+        self._compute_effective_price_quote()
+        self._compute_price_subtotal_custom()
+        self._compute_amount()
+
+
+    @api.onchange('order_id.installments', 'product_uom_qty')
+    def _onchange_trigger_quote_recalc(self):
+        installments = self.order_id.installments or '24'
+        self.with_context(installments=installments)._compute_price_quote()
+        self._compute_effective_price_quote()
+        self._compute_price_subtotal_custom()
+        self._compute_amount()
+
+
+    @api.onchange('include_full_service_warranty', 'order_id.full_service_warranty_percentage')
+    def _onchange_warranty_toggle(self):
+        for line in self:
+            if not line.manual_price_quote:
+                line._compute_price_quote()
+                line._compute_effective_price_quote()
+                line._compute_price_subtotal_custom()
+                line._compute_amount()

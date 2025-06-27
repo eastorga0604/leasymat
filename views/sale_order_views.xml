@@ -11,7 +11,6 @@
             <xpath expr="//page[@name='other_information']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
-
             <xpath expr="//page[@name='customer_signature']" position="attributes">
                 <attribute name="invisible">1</attribute>
             </xpath>
@@ -33,14 +32,15 @@
                 <field name="transport"/>
             </xpath>
 
-            <!-- Editable bottom for order_line to allow form view per line -->
+            <!-- Make order_line editable in form -->
             <xpath expr="//field[@name='order_line']" position="attributes">
                 <attribute name="editable">bottom</attribute>
             </xpath>
 
-            <!-- Add display_price_quote in the tree view -->
+            <!-- TREE VIEW: add columns -->
             <xpath expr="//field[@name='order_line']/tree/field[@name='price_unit']" position="after">
-                <field name="display_price_quote" string="Monthly Quote"/>
+                <field name="effective_price_quote" string="Monthly Quote" readonly="1"/>
+                <field name="manual_price_quote" string="Manual Quote"/>
                 <field name="include_full_service_warranty" string="Include Warranty"/>
             </xpath>
 
@@ -51,10 +51,12 @@
                 <attribute name="readonly">1</attribute>
             </xpath>
 
-            <!-- FORM view for order_line for proper onchange -->
+            <!-- FORM VIEW for order_line line editing -->
             <xpath expr="//field[@name='order_line']/form" position="inside">
-                <group>
-                    <field name="display_price_quote"/>
+                <group string="Monthly Payment Details">
+                    <field name="effective_price_quote" readonly="1"/>
+                    <field name="manual_price_quote"/>
+                    <field name="display_price_quote" invisible="1"/>
                     <field name="include_full_service_warranty" widget="boolean_toggle"/>
                 </group>
             </xpath>
@@ -69,7 +71,7 @@
         </field>
     </record>
 
-    <!-- Add installments to tree view -->
+    <!-- Add installments to list view -->
     <record id="view_order_tree_installments" model="ir.ui.view">
         <field name="name">sale.order.tree.installments</field>
         <field name="model">sale.order</field>
