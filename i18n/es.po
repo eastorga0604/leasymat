@@ -73,6 +73,12 @@ msgid "Monthly Quote"
 msgstr "Cuota Mensual"
 
 #. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Manual Quote"
+msgstr "Cotización Manual"
+
+
+#. module: custom_woocommerce_api
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_custom
 msgid "Observations"
 msgstr "Observaciones"

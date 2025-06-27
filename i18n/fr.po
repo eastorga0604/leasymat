@@ -73,6 +73,11 @@ msgid "Monthly Quote"
 msgstr "Devis mensuel"
 
 #. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Manual Quote"
+msgstr "Devis manuel"
+
+#. module: custom_woocommerce_api
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_custom
 msgid "Observations"
 msgstr "Observations"
