@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="sale_order_portal_content_inherit_custom"
+            inherit_id="sale.sale_order_portal_content">
+
+    <!-- Change header label -->
+    <xpath expr="//th[contains(., 'Unit Price')]" position="replace">
+      <th style="text-align: right">Monthly Quote</th>
+    </xpath>
+
+    <!-- Replace unit price cell -->
+    <xpath expr="//div[@t-field='line.price_unit']" position="replace">
+      <div t-field="line.effective_price_quote"
+           t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+    </xpath>
+
+  </template>
+</odoo>

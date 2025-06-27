@@ -13,6 +13,8 @@
         'views/account_move_views.xml',
         'views/crm_quick_create_patch.xml',
         'views/create_lead_oportunity.xml',
+        'views/report_saleorder_custom.xml',
+        'views/portal_saleorder_custom.xml',
     ],
     'controllers': [
         'controllers/main.py',
