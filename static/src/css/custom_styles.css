@@ -9,3 +9,7 @@ label[for*="radio_field_0_person"],
 #radio_field_0_person {
     display: none !important;
 }
+
+td[name="include_full_service_warranty"] {
+  text-align: right;
+}
