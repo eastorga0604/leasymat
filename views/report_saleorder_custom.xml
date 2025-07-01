@@ -14,5 +14,29 @@
     <span t-field="line.effective_price_quote"/>
   </xpath>
 
+    <xpath expr="//td[@name='td_subtotal']" position="after">
+      <tr>
+        <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
+          Includes Full Warranty
+        </td>
+        <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
+          Includes Standard Warranty
+        </td>
+        <td class="text-end"/>
+        <td class="text-end"/>
+        <td class="text-end"/>
+      </tr>
+    </xpath>
+
+
+
+    <xpath expr="//th[@name='th_taxes']" position="replace">
+      <th t-if="False"/>
+    </xpath>
+
+    <xpath expr="//td[@name='td_taxes']" position="replace">
+      <td t-if="False"/>
+    </xpath>
+
 </template>
 </odoo>

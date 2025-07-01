@@ -14,5 +14,29 @@
            t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
     </xpath>
 
+    <xpath expr="//th[@id='taxes_header']" position="replace">
+      <th t-if="False"/>
+    </xpath>
+
+    <xpath expr="//td[@id='taxes']" position="replace">
+      <td t-if="False"/>
+    </xpath>
+
+    <xpath expr="//td[@id='subtotal']" position="after">
+      <tr>
+        <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
+          Includes Full Warranty
+        </td>
+        <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
+          Includes Standard Warranty
+        </td>
+        <td class="text-end"/>
+        <td class="text-end"/>
+        <td class="text-end"/>
+      </tr>
+    </xpath>
+
+
+
   </template>
 </odoo>

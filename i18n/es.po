@@ -157,3 +157,13 @@ msgstr "Margen (€)"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
 msgid "Margin (%)"
 msgstr "Margen (%)"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.sale_order_portal_content_inherit_custom
+msgid "Includes Full Warranty"
+msgstr "Incluye Garantía Completa"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.sale_order_portal_content_inherit_custom
+msgid "Includes Standard Warranty"
+msgstr "Incluye Garantía Estándar"
