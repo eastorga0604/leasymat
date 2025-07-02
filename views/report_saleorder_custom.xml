@@ -28,8 +28,6 @@
       </tr>
     </xpath>
 
-
-
     <xpath expr="//th[@name='th_taxes']" position="replace">
       <th t-if="False"/>
     </xpath>
@@ -38,5 +36,20 @@
       <td t-if="False"/>
     </xpath>
 
+    <xpath expr="//div[@id='total']/div/table" position="inside">
+      <tr>
+        <td>IVA (20%):</td>
+        <td class="text-end">
+          <span t-field="doc.amount_vat_20"/>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Total Incl. IVA:</strong></td>
+        <td class="text-end">
+          <strong t-field="doc.amount_total_incl_vat_20"/></td>
+      </tr>
+    </xpath>
+
 </template>
+
 </odoo>

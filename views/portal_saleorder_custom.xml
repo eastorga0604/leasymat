@@ -36,6 +36,17 @@
       </tr>
     </xpath>
 
+    <xpath expr="//div[@id='total']//div[@class='col-xs-7 col-md-5 ms-auto']" position="inside">
+      <div class="d-flex justify-content-between mb-1">
+          <span t-translate="IVA (20%):">IVA (20%):</span>
+          <span t-field="sale_order.amount_vat_20"/>
+      </div>
+      <div class="d-flex justify-content-between">
+          <strong t-translate="Total Incl. IVA:">Total Incl. IVA:</strong>
+          <strong t-field="sale_order.amount_total_incl_vat_20"/>
+      </div>
+  </xpath>
+
 
 
   </template>

@@ -167,3 +167,23 @@ msgstr "Incluye Garantía Completa"
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.sale_order_portal_content_inherit_custom
 msgid "Includes Standard Warranty"
 msgstr "Incluye Garantía Estándar"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.sale_order_portal_content_inherit_custom
+msgid "Total Incl. IVA:"
+msgstr "Total Incl. IVA:"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.sale_order_portal_content_inherit_custom
+msgid "IVA (20%):"
+msgstr "IVA (20%):"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_vat_20
+msgid "IVA (20%)"
+msgstr "IVA (20%)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_incl_vat_20
+msgid "Total Incl. IVA"
+msgstr "Total Incl. IVA"

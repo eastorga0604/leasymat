@@ -16,3 +16,8 @@ td[name="include_full_service_warranty"] {
 th[data-name="include_full_service_warranty"] {
   text-align: right;
 }
+
+div[name="tax_totals"] {
+    display: none;
+}
+

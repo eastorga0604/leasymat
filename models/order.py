@@ -42,6 +42,20 @@ class SaleOrder(models.Model):
         help="Duplicated total used to force UI refresh when computed fields don't update."
     )
 
+    amount_vat_20 = fields.Monetary(
+        string="IVA (20%)",
+        compute="_compute_vat_20",
+        store=True,
+        currency_field='currency_id'
+    )
+
+    amount_total_incl_vat_20 = fields.Monetary(
+        string="Total Incl. IVA",
+        compute="_compute_vat_20",
+        store=True,
+        currency_field='currency_id'
+    )
+
     @api.depends('order_line.price_quote', 'amount_total')
     def _compute_margin(self):
         for order in self:
@@ -59,6 +73,14 @@ class SaleOrder(models.Model):
             order.margin_percent = (
                 float_round((margin / full_quote) * 100, 2) if total_quote else 0.0
             )
+
+    @api.depends('amount_untaxed')
+    def _compute_vat_20(self):
+        for order in self:
+            vat = order.amount_untaxed * 0.20
+            total = order.amount_untaxed + vat
+            order.amount_vat_20 = float_round(vat, precision_rounding=order.currency_id.rounding)
+            order.amount_total_incl_vat_20 = float_round(total, precision_rounding=order.currency_id.rounding)
 
     @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'transport')
     def _amount_all(self):
