@@ -1,13 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <template id="report_invoice_document_inherit_warranty" inherit_id="account.report_invoice_document">
+
+    <!-- Force report language context to French -->
+    <xpath expr="//t[@t-set='o']" position="replace">
+        <t t-set="o" t-value="o.with_context(lang='fr_FR')"/>
+    </xpath>
+
+    <!-- Force table headers in French -->
+    <xpath expr="//th[@name='th_description']" position="replace">
+        <th name="th_description">Description</th>
+    </xpath>
+    <xpath expr="//th[@name='th_quantity']" position="replace">
+        <th name="th_quantity" style="text-align: right">Quantité</th>
+    </xpath>
+    <xpath expr="//th[@name='th_priceunit']" position="replace">
+        <th name="th_priceunit" style="text-align: right">Prix unitaire</th>
+    </xpath>
+    <xpath expr="//th[@name='th_subtotal']" position="replace">
+        <th name="th_subtotal" style="text-align: right">Montant</th>
+    </xpath>
+
+    <xpath expr="//div[@name='due_date']" position="replace">
+      <div t-if="False"/>
+    </xpath>
+
+    <xpath expr="//div[@name='origin']" position="replace">
+      <div t-if="False"/>
+    </xpath>
+
+    <xpath expr="//strong[contains(text(), 'Invoice Date')]" position="replace">
+      <strong>Date:</strong>
+    </xpath>
+
+  <xpath expr="//p[@name='payment_communication']" position="replace">
+    <p t-if="False"/>
+  </xpath>
+
+    <!-- Add warranty line below subtotal -->
     <xpath expr="//td[@name='td_subtotal']" position="after">
       <tr>
         <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
-          Includes Full Warranty
+          Inclut la garantie complète
         </td>
         <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
-          Includes Standard Warranty
+          Inclut la garantie standard
         </td>
         <td class="text-end"/>
         <td class="text-end"/>
@@ -15,28 +52,77 @@
       </tr>
     </xpath>
 
+    <xpath expr="//h2" position="replace">
+      <h2>
+        <span>Devis </span>
+        <span t-field="o.custom_display_number"/>
+      </h2>
+    </xpath>
+
+    <!-- Hide Taxes column -->
     <xpath expr="//th[@name='th_taxes']" position="replace">
       <th t-if="False"/>
     </xpath>
-
     <xpath expr="//td[@name='td_taxes']" position="replace">
       <td t-if="False"/>
     </xpath>
+
+    <!-- Add TVA and Total TTC in French in the total area -->
     <xpath expr="//div[@id='total']//div//table[contains(@class, 'table-borderless')]" position="inside">
       <tr>
-        <td>IVA (20%):</td>
+        <td t-translate="TVA (20%) :">TVA (20%) :</td>
         <td class="text-end">
           <span t-field="o.amount_vat_20"/>
         </td>
       </tr>
       <tr>
-        <td><strong>Total Incl. IVA:</strong></td>
+        <td><strong t-translate="Total TTC :">Total TTC :</strong></td>
         <td class="text-end">
           <strong t-field="o.amount_total_incl_vat_20"/>
         </td>
       </tr>
     </xpath>
+
   </template>
 
+  <template id="hide_footer_email" inherit_id="web.external_layout_standard">
+    <xpath expr="//ul[contains(@class, 'list-inline')]" position="replace">
+      <!-- Removed / replaced with nothing -->
+    </xpath>
+    <xpath expr="//div[@name='company_address']" position="replace">
+        <ul class="list-unstyled" style="padding-top: 2rem">
+          <li>Leasymat</li>
+          <li>7 passage turquetil, 75011 Paris</li>
+          <li>Téléphone : 01 48 96 24 45</li>
+          <li>Email : commercial@leasymat.com</li>
+          <li>Siren : 983 918 996</li>
+        </ul>
+    </xpath>
+  </template>
+
+  <template id="custom_replace_address_layout" inherit_id="web.address_layout">
+    <xpath expr="." position="replace">
+      <div class="row">
+        <div class="col-6 offset-6 text-end">
+          <ul class="list-unstyled">
+            <li><span t-field="company.name"/></li>
+            <li><span t-field="company.partner_id.contact_address"/></li>
+            <li>
+              Téléphone :
+              <span t-field="company.phone"/>
+            </li>
+            <li>
+              Email :
+              <span t-field="company.email"/>
+            </li>
+            <!--<li>
+              Siren :
+              <span t-field="company.siren"/>
+            </li>-->
+          </ul>
+        </div>
+      </div>
+    </xpath>
+  </template>
 
 </odoo>

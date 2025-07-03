@@ -21,3 +21,7 @@ div[name="tax_totals"] {
     display: none;
 }
 
+div[name="company_address"]{
+    padding-top: 2rem;
+}
+
