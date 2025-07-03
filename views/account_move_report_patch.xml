@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="report_invoice_document_inherit_warranty" inherit_id="account.report_invoice_document">
+    <xpath expr="//td[@name='td_subtotal']" position="after">
+      <tr>
+        <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
+          Includes Full Warranty
+        </td>
+        <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
+          Includes Standard Warranty
+        </td>
+        <td class="text-end"/>
+        <td class="text-end"/>
+        <td class="text-end"/>
+      </tr>
+    </xpath>
+
+    <xpath expr="//th[@name='th_taxes']" position="replace">
+      <th t-if="False"/>
+    </xpath>
+
+    <xpath expr="//td[@name='td_taxes']" position="replace">
+      <td t-if="False"/>
+    </xpath>
+    <xpath expr="//div[@id='total']//div//table[contains(@class, 'table-borderless')]" position="inside">
+      <tr>
+        <td>IVA (20%):</td>
+        <td class="text-end">
+          <span t-field="o.amount_vat_20"/>
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Total Incl. IVA:</strong></td>
+        <td class="text-end">
+          <strong t-field="o.amount_total_incl_vat_20"/>
+        </td>
+      </tr>
+    </xpath>
+  </template>
+
+
+</odoo>

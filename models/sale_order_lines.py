@@ -201,3 +201,12 @@ class SaleOrderLine(models.Model):
                 line._compute_effective_price_quote()
                 line._compute_price_subtotal_custom()
                 line._compute_amount()
+
+    def _prepare_invoice_line(self, **optional_values):
+        res = super()._prepare_invoice_line(**optional_values)
+        res.update({
+            'include_full_service_warranty': self.include_full_service_warranty,
+            'price_unit': self.effective_price_quote,
+            'tax_ids': [(6, 0, [])],  # Remove taxes
+        })
+        return res

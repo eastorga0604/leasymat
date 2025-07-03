@@ -15,6 +15,7 @@
         'views/create_lead_oportunity.xml',
         'views/report_saleorder_custom.xml',
         'views/portal_saleorder_custom.xml',
+        'views/account_move_report_patch.xml'
     ],
     'controllers': [
         'controllers/main.py',
