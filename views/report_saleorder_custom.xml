@@ -6,7 +6,37 @@
 
   <!-- Change header label -->
   <xpath expr="//th[@name='th_priceunit']" position="replace">
-    <th name="th_priceunit" class="text-end">Monthly Quote</th>
+    <th name="th_priceunit" class="text-end">Devis mensuel</th>
+  </xpath>
+
+  <xpath expr="//th[@name='th_description']" position="replace">
+      <th name="th_description" style="text-align: left">Description</th>
+  </xpath>
+
+  <xpath expr="//th[@name='th_quantity']" position="replace">
+      <th name="th_quantity" style="text-align: right">Quantité</th>
+  </xpath>
+
+  <xpath expr="//th[@name='th_subtotal']" position="replace">
+        <th name="th_subtotal" style="text-align: right">Montant</th>
+  </xpath>
+
+   <!-- 1️⃣ Change the main title -->
+  <xpath expr="//h2" position="replace">
+    <h2>
+      <span>Devis</span>
+      <span t-out="doc.name"/> <!-- will show the Sale Order number -->
+    </h2>
+  </xpath>
+
+  <!-- Replace the entire "informations" block -->
+  <xpath expr="//div[@id='informations']" position="replace">
+    <div id="informations" class="row mt-4 mb-2">
+      <div t-if="doc.date_order" class="col-auto col-3 mw-100 mb-2">
+        <strong>Date:</strong><br/>
+        <span class="m-0" t-field="doc.date_order" t-options="{&quot;widget&quot;: &quot;date&quot;}"/>
+      </div>
+    </div>
   </xpath>
 
   <!-- Change line value -->
@@ -17,10 +47,10 @@
     <xpath expr="//td[@name='td_subtotal']" position="after">
       <tr>
         <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
-          Includes Full Warranty
+          Inclut la garantie complète
         </td>
         <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
-          Includes Standard Warranty
+          Inclut la garantie standard
         </td>
         <td class="text-end"/>
         <td class="text-end"/>
@@ -38,13 +68,13 @@
 
     <xpath expr="//div[@id='total']/div/table" position="inside">
       <tr>
-        <td>IVA (20%):</td>
+        <td>TVA (20%):</td>
         <td class="text-end">
           <span t-field="doc.amount_vat_20"/>
         </td>
       </tr>
       <tr>
-        <td><strong>Total Incl. IVA:</strong></td>
+        <td><strong>Total TTC:</strong></td>
         <td class="text-end">
           <strong t-field="doc.amount_total_incl_vat_20"/></td>
       </tr>

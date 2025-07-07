@@ -15,7 +15,7 @@
         <th name="th_quantity" style="text-align: right">Quantité</th>
     </xpath>
     <xpath expr="//th[@name='th_priceunit']" position="replace">
-        <th name="th_priceunit" style="text-align: right">Prix unitaire</th>
+        <th name="th_priceunit" style="text-align: right">Devis mensuel</th>
     </xpath>
     <xpath expr="//th[@name='th_subtotal']" position="replace">
         <th name="th_subtotal" style="text-align: right">Montant</th>
@@ -54,7 +54,7 @@
 
     <xpath expr="//h2" position="replace">
       <h2>
-        <span>Devis </span>
+        <span>Facture </span>
         <span t-field="o.custom_display_number"/>
       </h2>
     </xpath>

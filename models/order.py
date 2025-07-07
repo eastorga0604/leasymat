@@ -71,7 +71,7 @@ class SaleOrder(models.Model):
 
             order.margin_amount = float_round(margin, precision_rounding=currency.rounding)
             order.margin_percent = (
-                float_round((margin / full_quote) * 100, 2) if total_quote else 0.0
+                float_round((margin / total_cost) * 100, 2) if total_quote else 0.0
             )
 
     @api.depends('amount_untaxed')
