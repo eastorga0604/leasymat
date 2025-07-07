@@ -74,20 +74,23 @@ class SaleOrderLine(models.Model):
             total = (line.price_unit or 0.0) * 2.1
             months = line.env.context.get('installments') or line.order_id.installments or '24'
 
-            if total <= 500:
+            if 500 <= total < 1500:
                 palier = 'palier-500'
-            elif total <= 1500:
+            elif 1500 <= total < 5000:
                 palier = 'palier-1-500'
-            elif total <= 5000:
+            elif 5000 <= total < 8000:
                 palier = 'palier-5-000'
-            elif total <= 8000:
+            elif 8000 <= total < 12000:
                 palier = 'palier-8-000'
-            elif total <= 12000:
+            elif 12000 <= total < 20000:
                 palier = 'palier-12-000'
-            elif total <= 20000:
+            elif 20000 <= total < 1000000:
                 palier = 'palier-20-000'
             else:
                 palier = 'palier-1-000-000'
+
+
+            _logger.info(f"Computing price_quote for line {total} with palier {palier} and months {months}")
 
             try:
                 coef = PALIER_COEFFICIENTS[palier][months]
