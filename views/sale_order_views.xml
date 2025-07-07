@@ -71,8 +71,11 @@
                 <field name="amount_total"/>
                 <field name="amount_vat_20" readonly="1"/>
                 <field name="amount_total_incl_vat_20" readonly="1"/>
+                <field name="amount_total_sans_tva" readonly="1"/>
+                <field name="list_price_total" readonly="1"/>
                 <field name="margin_amount" readonly="1"/>
                 <field name="margin_percent" readonly="1"/>
+
             </xpath>
 
 

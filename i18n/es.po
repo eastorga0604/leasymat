@@ -187,3 +187,14 @@ msgstr "IVA (20%)"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_incl_vat_20
 msgid "Total Incl. IVA"
 msgstr "Total Incl. IVA"
+
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__list_price_total
+msgid "List Price Total"
+msgstr "Precio Total de Lista"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_sans_tva
+msgid "TOTAL (Sans TVA)"
+msgstr "TOTAL (Sin IVA)"

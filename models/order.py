@@ -55,6 +55,35 @@ class SaleOrder(models.Model):
         store=True,
         currency_field='currency_id'
     )
+    amount_total_sans_tva = fields.Monetary(
+        string='TOTAL (Sans TVA)',
+        currency_field='currency_id',
+        compute='_compute_amount_total_sans_tva',
+        store=True
+    )
+
+    list_price_total = fields.Monetary(
+        string='List Price Total',
+        currency_field='currency_id',
+        compute='_compute_list_price_total',
+        store=True
+    )
+
+    @api.depends('installments', 'order_line.price_unit', 'order_line.product_uom_qty')
+    def _compute_amount_total_sans_tva(self):
+        for order in self:
+            total = 0.0
+            for line in order.order_line:
+                total += line.price_unit * int(order.installments or '1')
+            order.amount_total_sans_tva = total
+
+    @api.depends('order_line.product_id', 'order_line.product_uom_qty')
+    def _compute_list_price_total(self):
+        for order in self:
+            total = 0.0
+            for line in order.order_line:
+                total += line.product_id.list_price * line.product_uom_qty
+            order.list_price_total = total
 
     @api.depends('order_line.price_quote', 'amount_total')
     def _compute_margin(self):

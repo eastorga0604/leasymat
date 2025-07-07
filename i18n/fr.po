@@ -191,3 +191,13 @@ msgstr "TVA (20%)"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_incl_vat_20
 msgid "Total Incl. IVA"
 msgstr "Total TTC"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__list_price_total
+msgid "List Price Total"
+msgstr "Prix d'achat"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_sans_tva
+msgid "TOTAL (Sans TVA)"
+msgstr "TOTAL (Sans TVA)"
