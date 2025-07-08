@@ -89,9 +89,6 @@ class SaleOrderLine(models.Model):
             else:
                 palier = 'palier-1-000-000'
 
-
-            _logger.info(f"Computing price_quote for line {total} with palier {palier} and months {months}")
-
             try:
                 coef = PALIER_COEFFICIENTS[palier][months]
                 base_quote = (total * coef) / 100.0
