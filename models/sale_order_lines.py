@@ -206,7 +206,9 @@ class SaleOrderLine(models.Model):
         res = super()._prepare_invoice_line(**optional_values)
         res.update({
             'include_full_service_warranty': self.include_full_service_warranty,
-            'price_unit': self.effective_price_quote,
+            #'price_unit': self.effective_price_quote,
+            'price_unit': self.product_id.list_price or 0.0,  # Use display price quote for invoice
+            'product_list_price': self.product_id.list_price or 0.0,  # Set original product price
             'tax_ids': [(6, 0, [])],  # Remove taxes
         })
         return res

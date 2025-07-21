@@ -191,7 +191,7 @@ class SaleOrder(models.Model):
         for order in self:
             for invoice in invoices:
                 if order.financing_agency_id:
-                    invoice.partner_id = order.financing_agency_id.partner_id.id
+                    invoice.financing_agency_id = order.financing_agency_id.id
                     if order.partner_id:
                         invoice.narration = f"{order.partner_id.name}"
                         _logger.info(f"Narration set in _create_invoices: {invoice.narration}")

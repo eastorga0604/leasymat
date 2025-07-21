@@ -15,7 +15,7 @@
         <th name="th_quantity" style="text-align: right">Quantité</th>
     </xpath>
     <xpath expr="//th[@name='th_priceunit']" position="replace">
-        <th name="th_priceunit" style="text-align: right">Devis mensuel</th>
+        <th name="th_priceunit" style="text-align: right">PVP</th>
     </xpath>
     <xpath expr="//th[@name='th_subtotal']" position="replace">
         <th name="th_subtotal" style="text-align: right">Montant</th>
@@ -33,10 +33,20 @@
       <strong>Date:</strong>
     </xpath>
 
-  <xpath expr="//p[@name='payment_communication']" position="replace">
-    <p t-if="False"/>
-  </xpath>
+    <xpath expr="//p[@name='payment_communication']" position="replace">
+      <p t-if="False"/>
+    </xpath>
 
+    <xpath expr="//td[@name='td_price_unit']" position="replace">
+      <td name="td_price_unit" t-attf-class="text-end">
+        <span class="text-nowrap" t-field="line.product_list_price"/>
+      </td>
+    </xpath>
+    <xpath expr="//td[@name='td_subtotal']" position="replace">
+      <td name="td_subtotal" t-attf-class="text-end">
+        <span class="text-nowrap" t-field="line.price_total"/>
+      </td>
+    </xpath>
     <!-- Add warranty line below subtotal -->
     <xpath expr="//td[@name='td_subtotal']" position="after">
       <tr>
@@ -105,20 +115,34 @@
       <div class="row">
         <div class="col-6 offset-6 text-end">
           <ul class="list-unstyled">
-            <li><span t-field="company.name"/></li>
-            <li><span t-field="company.partner_id.contact_address"/></li>
-            <li>
-              Téléphone :
-              <span t-field="company.phone"/>
-            </li>
-            <li>
-              Email :
-              <span t-field="company.email"/>
-            </li>
-            <!--<li>
-              Siren :
-              <span t-field="company.siren"/>
-            </li>-->
+            <t t-if="o.financing_agency_id">
+              <li><span t-field="o.financing_agency_id.name"/></li>
+              <li><span t-field="o.financing_agency_id.partner_id.contact_address"/></li>
+              <li>
+                Téléphone :
+                <span t-field="o.financing_agency_id.partner_id.phone"/>
+              </li>
+              <li>
+                Email :
+                <span t-field="o.financing_agency_id.partner_id.email"/>
+              </li>
+            </t>
+            <t t-else="">
+              <li><span t-field="company.name"/></li>
+              <li><span t-field="company.partner_id.contact_address"/></li>
+              <li>
+                Téléphone :
+                <span t-field="company.phone"/>
+              </li>
+              <li>
+                Email :
+                <span t-field="company.email"/>
+              </li>
+              <!-- <li>
+                Siren :
+                <span t-field="company.siren"/>
+              </li> -->
+            </t>
           </ul>
         </div>
       </div>

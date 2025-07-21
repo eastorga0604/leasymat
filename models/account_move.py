@@ -8,6 +8,12 @@ class AccountMoveLine(models.Model):
         help="Copied from the sales order line."
     )
 
+    product_list_price = fields.Float(
+        string="Product List Price",
+        related='product_id.list_price',
+        store=False,  # or True if you want it persisted and searchable
+        readonly=True
+    )
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -16,6 +22,13 @@ class AccountMove(models.Model):
     amount_total_incl_vat_20 = fields.Monetary(string='Total Incl. IVA', compute='_compute_iva_20')
 
     custom_display_number = fields.Char(string="Custom Invoice Number", readonly=True)
+
+    financing_agency_id = fields.Many2one(
+        'financing.agency',
+        string="Financing Agency",
+        ondelete='set null',
+        readonly=True,
+    )
 
     def _compute_custom_display_number(self):
         for record in self:
