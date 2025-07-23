@@ -26,8 +26,7 @@ class AccountMove(models.Model):
     financing_agency_id = fields.Many2one(
         'financing.agency',
         string="Financing Agency",
-        ondelete='set null',
-        readonly=True,
+        ondelete='set null'
     )
 
     def _compute_custom_display_number(self):
@@ -52,8 +51,35 @@ class AccountMove(models.Model):
                 move._compute_custom_display_number()
         return res
 
-    @api.depends('amount_total')
+    @api.depends('amount_total', 'invoice_line_ids.price_unit', 'invoice_line_ids.quantity')
     def _compute_iva_20(self):
         for move in self:
-            move.amount_vat_20 = move.currency_id.round(move.amount_total * 0.2)
-            move.amount_total_incl_vat_20 = move.currency_id.round(move.amount_total * 1.2)
+            total = sum(line.price_subtotal for line in move.invoice_line_ids)
+            move.amount_vat_20 = move.currency_id.round(total * 0.2)
+            move.amount_total_incl_vat_20 = move.currency_id.round(total * 1.2)
+
+    @api.onchange('invoice_line_ids')
+    def _onchange_recompute_iva_20(self):
+        self._compute_iva_20()
+
+    @api.onchange('financing_agency_id')
+    def _onchange_financing_agency(self):
+        if self.financing_agency_id:
+            self.partner_id = self.financing_agency_id.partner_id
+
+    @api.model
+    def create(self, vals):
+        """Ensure partner_id is set when financing_agency_id is provided."""
+        if vals.get('financing_agency_id') and not vals.get('partner_id'):
+            agency = self.env['financing.agency'].browse(vals['financing_agency_id'])
+            vals['partner_id'] = agency.partner_id.id
+        return super(AccountMove, self).create(vals)
+
+    def write(self, vals):
+        """Ensure partner_id updates if financing_agency_id changes."""
+        res = super(AccountMove, self).write(vals)
+        if 'financing_agency_id' in vals:
+            for record in self:
+                if record.financing_agency_id:
+                    record.partner_id = record.financing_agency_id.partner_id
+        return res

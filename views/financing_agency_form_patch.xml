@@ -1,0 +1,32 @@
+<odoo>
+    <record id="view_financing_agency_form" model="ir.ui.view">
+        <field name="name">financing.agency.form</field>
+        <field name="model">financing.agency</field>
+        <field name="arch" type="xml">
+            <form string="Financing Agency">
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="description"/>
+                        <field name="partner_id"/>
+                        <field name="email"/>
+                        <field name="phone"/>
+                        <field name="address"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_financing_agency_tree" model="ir.ui.view">
+    <field name="name">financing.agency.tree</field>
+    <field name="model">financing.agency</field>
+    <field name="arch" type="xml">
+        <tree>
+            <field name="name"/>
+            <field name="email"/>
+            <field name="phone"/>
+            <field name="address"/>
+        </tree>
+    </field>
+</record>
+</odoo>

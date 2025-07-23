@@ -9,12 +9,17 @@ class FinancingAgency(models.Model):
     #active = fields.Boolean(string="Active", default=True)
     name = fields.Char(string="Name", required=True)  # Nombre del organismo
     description = fields.Text(string="Description")
+
     partner_id = fields.Many2one(
         'res.partner',
         string="Customer",
         required=True,
         help="Select the corresponding partner record for this financing agency."
     )
+
+    email = fields.Char(string="Email", help="Email address of the financing agency.", required=True)
+    address = fields.Char(string="Address", help="Physical address of the financing agency.", required=True)
+    phone = fields.Char(string="Phone", help="Contact phone number of the financing agency.", required=True)
 
     @api.model
     def create(self, vals):

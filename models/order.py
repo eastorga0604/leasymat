@@ -69,12 +69,13 @@ class SaleOrder(models.Model):
         store=True
     )
 
-    @api.depends('installments', 'order_line.price_unit', 'order_line.product_uom_qty')
+    @api.depends('installments', 'order_line.price_quote', 'order_line.product_uom_qty')
     def _compute_amount_total_sans_tva(self):
         for order in self:
             total = 0.0
             for line in order.order_line:
-                total += line.price_unit * int(order.installments or '1')
+                print(f"Processing line: {line.product_id.name}, Price: {line.product_id.lst_price}, Qty: {int(order.installments or '1')}")
+                total += line.effective_price_quote * int(order.installments or '1')
             order.amount_total_sans_tva = total
 
     @api.depends('order_line.product_id', 'order_line.product_uom_qty')

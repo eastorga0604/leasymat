@@ -198,3 +198,33 @@ msgstr "Precio Total de Lista"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_sans_tva
 msgid "TOTAL (Sans TVA)"
 msgstr "TOTAL (Sin IVA)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__email
+msgid "Email"
+msgstr "Correo Electrónico"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__phone
+msgid "Phone"
+msgstr "Teléfono"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__address
+msgid "Address"
+msgstr "Dirección"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__name
+msgid "Name"
+msgstr "Nombre"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__description
+msgid "Description"
+msgstr "Descripción"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_inherit_financing
+msgid "Financing Agency"
+msgstr "Agencia de Financiamiento"

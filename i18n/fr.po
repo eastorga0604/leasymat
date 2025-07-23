@@ -201,3 +201,33 @@ msgstr "Prix d'achat"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_total_sans_tva
 msgid "TOTAL (Sans TVA)"
 msgstr "TOTAL (Sans TVA)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__email
+msgid "Email"
+msgstr "Email"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__phone
+msgid "Phone"
+msgstr "Téléphone"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__address
+msgid "Address"
+msgstr "Adresse"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__name
+msgid "Name"
+msgstr "Nom"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_financing_agency__description
+msgid "Description"
+msgstr "Description"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_inherit_financing
+msgid "Financing Agency"
+msgstr "Agence de financement"
