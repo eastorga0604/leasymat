@@ -178,11 +178,14 @@ class SaleOrder(models.Model):
             tax_totals['amount_untaxed'] = float_round(order.amount_untaxed, precision_rounding=order.currency_id.rounding)
 
             # Format it using babel
-            formatted_total = format_currency(
-                new_total,
-                order.currency_id.name,
-                locale=self.env.context.get('lang') or 'en_US'
-            )
+            #formatted_total = format_currency(
+            #    new_total,
+            #    order.currency_id.name,
+            #    locale=self.env.context.get('lang') or 'en_US'
+            #)
+
+            formatted_total = format_currency(new_total, 'EUR', locale='fr_FR')
+
             tax_totals['formatted_amount_total'] = formatted_total
 
             order.tax_totals = tax_totals

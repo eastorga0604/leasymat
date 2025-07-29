@@ -4,6 +4,7 @@
           inherit_id="sale.report_saleorder_document"
           name="Quotation/Order Document - Replace Unit Price with Monthly Quote">
 
+
   <!-- Change header label -->
   <xpath expr="//th[@name='th_priceunit']" position="replace">
     <th name="th_priceunit" class="text-end">Devis mensuel</th>
@@ -41,8 +42,17 @@
 
   <!-- Change line value -->
   <xpath expr="//td[@name='td_priceunit']/span[@t-field='line.price_unit']" position="replace">
-    <span t-field="line.effective_price_quote"/>
+    <div t-field="line.effective_price_quote"
+           t-options='{"widget": "monetary", "display_currency": line.order_id.currency_id}'/>
   </xpath>
+
+  <xpath expr="//td[@name='td_quantity']/span[@t-field='line.product_uom_qty']" position="replace">
+    <span t-esc="line.product_uom_qty"/>
+  </xpath>
+
+  <xpath expr="//td[@name='td_quantity']/span[@t-field='line.product_uom']" position="replace">
+  <!-- remove the UoM text -->
+</xpath>
 
     <xpath expr="//td[@name='td_subtotal']" position="after">
       <tr>

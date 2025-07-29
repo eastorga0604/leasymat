@@ -12,6 +12,7 @@
                         <field name="email"/>
                         <field name="phone"/>
                         <field name="address"/>
+                        <field name="siren"/>
                     </group>
                 </sheet>
             </form>
@@ -26,6 +27,7 @@
             <field name="email"/>
             <field name="phone"/>
             <field name="address"/>
+            <field name="siren"/>
         </tree>
     </field>
 </record>

@@ -9,6 +9,7 @@ class FinancingAgency(models.Model):
     #active = fields.Boolean(string="Active", default=True)
     name = fields.Char(string="Name", required=True)  # Nombre del organismo
     description = fields.Text(string="Description")
+    siren = fields.Char(string="SIREN")
 
     partner_id = fields.Many2one(
         'res.partner',

@@ -24,12 +24,12 @@
             <xpath expr="//field[@name='payment_term_id']" position="after">
                 <field name="installments"/>
                 <field name="financing_start_date"/>
-                <field name="financing_end_date" readonly="1"/>
+                <!--<field name="financing_end_date" readonly="1"/>
                 <field name="financing_agency_id"/>
                 <field name="warranty_start_date"/>
-                <field name="warranty_end_date"/>
+                <field name="warranty_end_date"/>-->
                 <field name="full_service_warranty_percentage"/>
-                <field name="transport"/>
+                <!--<field name="transport"/>-->
             </xpath>
 
             <!-- Make order_line editable in form -->

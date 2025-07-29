@@ -121,6 +121,10 @@
                 Email :
                 <span t-field="o.financing_agency_id.email"/>
               </li>
+              <li>
+                Siren :
+                <span t-field="o.financing_agency_id.siren"/>
+              </li>
             </t>
             <t t-else="">
               <li><span t-field="company.name"/></li>
@@ -133,10 +137,10 @@
                 Email :
                 <span t-field="company.email"/>
               </li>
-              <!-- <li>
+              <li>
                 Siren :
-                <span t-field="company.siren"/>
-              </li> -->
+                <span t-field="company.partner_id.siren"/>
+              </li>
             </t>
           </ul>
         </div>

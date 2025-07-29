@@ -17,7 +17,8 @@
         'views/portal_saleorder_custom.xml',
         'views/account_move_report_patch.xml',
         'views/financing_agency_form_patch.xml',
-        'views/account_move_form_patch.xml'
+        'views/account_move_form_patch.xml',
+        'views/res_partner_views.xml'
     ],
     'controllers': [
         'controllers/main.py',
