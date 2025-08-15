@@ -33,6 +33,8 @@ class WooCommerceAPIController(http.Controller):
                 partner = request.env['res.partner'].sudo().create({
                     'name': customer_data.get('name'),
                     'email': customer_data.get('email'),
+                    'siren': customer_data.get('siren', ''),
+
                 })
 
             # Crear líneas de la orden
