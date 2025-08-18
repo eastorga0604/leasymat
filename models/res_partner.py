@@ -4,4 +4,4 @@ from odoo import models, fields
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    siren = fields.Char(string="SIREN")
+    siren = fields.Char(string="SIREN", help="SIREN number of the partner", required=False)
