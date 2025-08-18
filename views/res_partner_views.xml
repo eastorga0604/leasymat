@@ -8,7 +8,7 @@
 
       <!-- Add SIREN field below Tax ID field -->
       <xpath expr="//field[@name='vat']" position="after">
-        <field name="siren"/>
+        <field name="siren" string="SIREN"/>
       </xpath>
 
     </field>
