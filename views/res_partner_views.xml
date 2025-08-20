@@ -1,13 +1,15 @@
-<!-- views/res_partner_views.xml -->
 <odoo>
-  <record id="view_partner_form_inherit_siren" model="ir.ui.view">
-    <field name="name">res.partner.form.siren</field>
+  <record id="view_partner_form_inherit_siren_row" model="ir.ui.view">
+    <field name="name">res.partner.form.siren.row</field>
     <field name="model">res.partner</field>
     <field name="inherit_id" ref="base.view_partner_form"/>
+    <field name="priority">95</field>
     <field name="arch" type="xml">
 
-      <!-- Add SIREN field below Tax ID field -->
-      <xpath expr="//field[@name='vat']" position="after">
+      <!-- Try after VAT; if VAT not present, fallback to after WEBSITE -->
+      <xpath expr="//field[@name='vat'] | //field[@name='website']" position="after">
+        <!-- This tiny group produces a proper 2-column row:
+             left cell = label, right cell = field -->
         <group col="2">
           <label for="siren" string="SIREN"/>
           <field name="siren" nolabel="1"/>

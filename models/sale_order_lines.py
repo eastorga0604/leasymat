@@ -21,7 +21,7 @@ class SaleOrderLine(models.Model):
     price_quote = fields.Float(
         string="Auto Monthly Quote",
         compute="_compute_price_quote",
-        store=False
+        store=True
     )
 
     display_price_quote = fields.Float(
@@ -42,7 +42,7 @@ class SaleOrderLine(models.Model):
     effective_price_quote = fields.Float(
         string="Monthly Quote (Final)",
         compute="_compute_effective_price_quote",
-        store=False
+        store=True
     )
 
     price_subtotal = fields.Monetary(
@@ -53,17 +53,17 @@ class SaleOrderLine(models.Model):
 
 
     # Create method
-    @api.model
-    def create(self, vals):
-        manual = vals.get('manual_price_quote')
-        auto = vals.get('display_price_quote') or vals.get('price_quote') or 0.0
-        qty = vals.get('product_uom_qty') or 1.0
-        currency = self.env.company.currency_id
-        rounding = currency.rounding if currency else 0.01
-        chosen_quote = manual if manual else auto
-        subtotal = float_round(chosen_quote * qty, precision_rounding=rounding)
-        vals['price_subtotal'] = subtotal
-        return super().create(vals)
+    #@api.model
+    #def create(self, vals):
+    #    manual = vals.get('manual_price_quote')
+    #    auto = vals.get('display_price_quote') or vals.get('price_quote') or 0.0
+    #    qty = vals.get('product_uom_qty') or 1.0
+    #    currency = self.env.company.currency_id
+    #    rounding = currency.rounding if currency else 0.01
+    #    chosen_quote = manual if manual else auto
+    #    subtotal = float_round(chosen_quote * qty, precision_rounding=rounding)
+    #    vals['price_subtotal'] = subtotal
+    #    return super().create(vals)
 
 
     # Compute the automatic calculated quote
