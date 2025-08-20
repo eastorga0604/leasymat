@@ -67,14 +67,7 @@ class WooCommerceAPIController(http.Controller):
                     'product_id': odoo_product.id,
                     'product_uom_qty': qty,
                     'price_unit': odoo_product.lst_price,
-
-                    # Treat incoming price as MANUAL override so it is respected
-                    # and so UI toggles won't recalc it away.
-                    'manual_price_quote': manual_quote if manual_quote > 0 else 0.0,
-                    'display_price_quote': manual_quote if manual_quote > 0 else 0.0,
-
-                    # Optional: pass warranty flag from metadata if you use it
-                    'include_full_service_warranty': bool(metadata.get('include_full_service_warranty')),
+                    'display_price_quote': manual_quote if manual_quote > 0 else 0.0
                 }
 
                 request.env['sale.order.line'].sudo().create(line_vals)

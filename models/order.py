@@ -1,202 +1,175 @@
+# -*- coding: utf-8 -*-
 from odoo import models, fields, api
-from datetime import timedelta
-import logging
 from odoo.tools.float_utils import float_round
-from babel.numbers import format_currency
+import logging
+
 _logger = logging.getLogger(__name__)
 
-class SaleOrder(models.Model):
-    _inherit = 'sale.order'
+PALIER_COEFFICIENTS = {
+    "palier-500":       {"12": 9.571, "24": 5.171, "36": 3.710, "48": 2.742, "60": 2.235},
+    "palier-1-500":     {"12": 9.248, "24": 5.127, "36": 3.474, "48": 2.703, "60": 2.186},
+    "palier-5-000":     {"12": 9.168, "24": 5.081, "36": 3.429, "48": 2.694, "60": 2.163},
+    "palier-8-000":     {"12": 9.087, "24": 4.992, "36": 3.383, "48": 2.646, "60": 2.139},
+    "palier-12-000":    {"12": 9.048, "24": 4.860, "36": 3.337, "48": 2.599, "60": 2.114},
+    "palier-20-000":    {"12": 9.008, "24": 4.816, "36": 3.293, "48": 2.576, "60": 2.100},
+    "palier-1-000-000": {"12": 9.008, "24": 4.816, "36": 3.293, "48": 2.576, "60": 2.100},
+}
 
-    installments = fields.Selection([
-        ('24', '24'),
-        ('36', '36'),
-        ('48', '48'),
-        ('60', '60')
-    ], string="Quotas", default='24', help="Number of quotas for payment.")
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
 
-    financing_duration = fields.Integer(string='Financing Duration (Months)')
-    financing_start_date = fields.Date(string='Start Date')
-    financing_end_date = fields.Date(string='End Date', compute='_compute_financing_end_date', store=True)
-
-    financing_agency_id = fields.Many2one('financing.agency', string="Financing Agency", ondelete='set null')
-
-    warranty_start_date = fields.Date(string='Warranty Start Date', compute='_compute_warranty_dates', store=True)
-    warranty_end_date = fields.Date(string='Warranty End Date', compute='_compute_warranty_dates', store=True)
-
-    full_service_warranty_percentage = fields.Float(string="Full Service Warranty Percentage", default=10.0)
-    transport = fields.Float(string="Transport", default=0.0)
-
-    margin_amount = fields.Monetary(string="Margin (€)", compute="_compute_margin", store=True)
-    margin_percent = fields.Float(string="Margin (%)", compute="_compute_margin", store=True)
-
-    amount_untaxed = fields.Monetary(string='Untaxed Amount', compute='_amount_all', store=True, readonly=True)
-    amount_tax = fields.Monetary(string='Taxes', compute='_amount_all', store=True, readonly=True)
-    amount_total = fields.Monetary(string='Total', compute='_amount_all', store=True, readonly=True)
-
-    # 👇 NEW: This field is used to force UI refresh
-    display_amount_total = fields.Monetary(
-        string='Display Total',
-        store=True,
-        readonly=False,
-        help="Duplicated total used to force UI refresh when computed fields don't update."
-    )
-
-    amount_vat_20 = fields.Monetary(
-        string="IVA (20%)",
-        compute="_compute_vat_20",
-        store=True,
-        currency_field='currency_id'
-    )
-
-    amount_total_incl_vat_20 = fields.Monetary(
-        string="Total Incl. IVA",
-        compute="_compute_vat_20",
-        store=True,
-        currency_field='currency_id'
-    )
-    amount_total_sans_tva = fields.Monetary(
-        string='TOTAL (Sans TVA)',
-        currency_field='currency_id',
-        compute='_compute_amount_total_sans_tva',
+    # Auto monthly (computed from list price and palier)
+    price_quote = fields.Float(
+        string="Auto Monthly Quote",
+        compute="_compute_price_quote",
         store=True
     )
 
-    list_price_total = fields.Monetary(
-        string='List Price Total',
-        currency_field='currency_id',
-        compute='_compute_list_price_total',
+    # UI-visible mirror; only synced from auto if no manual value
+    display_price_quote = fields.Float(
+        string="Auto Monthly Quote (Visible)",
+        readonly=False
+    )
+
+    # Optional: user can type a manual monthly value in the UI
+    manual_price_quote = fields.Float(
+        string="Manual Monthly Quote",
+        help="Overrides the automatically calculated monthly quote if set."
+    )
+
+    include_full_service_warranty = fields.Boolean(
+        string="Include Full Service Warranty",
+        default=False
+    )
+
+    # Final monthly after applying manual/auto + warranty
+    effective_price_quote = fields.Float(
+        string="Monthly Quote (Final)",
+        compute="_compute_effective_price_quote",
         store=True
     )
 
-    @api.depends('installments', 'order_line.price_quote', 'order_line.product_uom_qty')
-    def _compute_amount_total_sans_tva(self):
-        for order in self:
-            total = 0.0
-            for line in order.order_line:
-                print(f"Processing line: {line.product_id.name}, Price: {line.product_id.lst_price}, Qty: {int(order.installments or '1')}")
-                total += line.effective_price_quote * int(order.installments or '1')
-            order.amount_total_sans_tva = total
+    # Subtotal = monthly final * qty (stored)
+    price_subtotal = fields.Monetary(
+        string='Subtotal',
+        compute='_compute_price_subtotal_custom',
+        store=True
+    )
 
-    @api.depends('order_line.product_id', 'order_line.product_uom_qty')
-    def _compute_list_price_total(self):
-        for order in self:
-            total = 0.0
-            for line in order.order_line:
-                total += line.product_id.list_price * line.product_uom_qty
-            order.list_price_total = total
+    # ---------- COMPUTES ----------
 
-    @api.depends('order_line.price_quote', 'amount_total')
-    def _compute_margin(self):
-        for order in self:
-            total_quote = sum(line.price_subtotal for line in order.order_line)
-            total_cost = sum(
-                (line.product_id.lst_price or 0.0) for line in order.order_line
-            )
-            months = int(order.installments or '1')
-            full_quote = total_quote * months
-            margin = full_quote - total_cost
+    @api.depends(
+        'price_unit',
+        'include_full_service_warranty',
+        'order_id.full_service_warranty_percentage',
+        'order_id.installments'
+    )
+    def _compute_price_quote(self):
+        for line in self:
+            total = (line.price_unit or 0.0) * 2.1
+            months = str(line.order_id.installments or '24')
 
-            currency = order.currency_id
-
-            order.margin_amount = float_round(margin, precision_rounding=currency.rounding)
-            order.margin_percent = (
-                float_round((margin / total_cost) * 100, 2) if total_quote else 0.0
-            )
-
-    @api.depends('amount_untaxed')
-    def _compute_vat_20(self):
-        for order in self:
-            vat = order.amount_untaxed * 0.20
-            total = order.amount_untaxed + vat
-            order.amount_vat_20 = float_round(vat, precision_rounding=order.currency_id.rounding)
-            order.amount_total_incl_vat_20 = float_round(total, precision_rounding=order.currency_id.rounding)
-
-    @api.depends('order_line.price_subtotal', 'order_line.price_tax', 'transport')
-    def _amount_all(self):
-        for order in self:
-            amount_untaxed = sum(line.price_subtotal for line in order.order_line)
-            amount_tax = sum(line.price_tax for line in order.order_line)
-            _logger.info(f"Shows amounts for order {amount_untaxed}")
-            total = amount_untaxed + amount_tax + order.transport
-
-            order.amount_untaxed = float_round(amount_untaxed, precision_rounding=order.currency_id.rounding)
-            order.amount_tax = float_round(amount_tax, precision_rounding=order.currency_id.rounding)
-            order.amount_total = float_round(total, precision_rounding=order.currency_id.rounding)
-
-            # 👇 Force UI refresh
-            order.display_amount_total = order.amount_total
-
-            _logger.info(f"Computed amounts for order {order.name or ''}: {order.amount_total}")
-
-    @api.depends('date_order')
-    def _compute_warranty_dates(self):
-        for order in self:
-            if order.date_order:
-                order.warranty_start_date = order.date_order
-                order.warranty_end_date = order.date_order + timedelta(days=365)
+            if 500 <= total < 1500:
+                palier = 'palier-500'
+            elif 1500 <= total < 5000:
+                palier = 'palier-1-500'
+            elif 5000 <= total < 8000:
+                palier = 'palier-5-000'
+            elif 8000 <= total < 12000:
+                palier = 'palier-8-000'
+            elif 12000 <= total < 20000:
+                palier = 'palier-12-000'
+            elif 20000 <= total < 1000000:
+                palier = 'palier-20-000'
             else:
-                order.warranty_start_date = False
-                order.warranty_end_date = False
+                palier = 'palier-1-000-000'
 
-    @api.depends('financing_start_date', 'financing_duration')
-    def _compute_financing_end_date(self):
-        for order in self:
-            if order.financing_start_date and order.financing_duration:
-                order.financing_end_date = order.financing_start_date + timedelta(days=order.financing_duration * 30)
-            else:
-                order.financing_end_date = False
+            try:
+                coef = PALIER_COEFFICIENTS[palier][months]
+                base_quote = (total * coef) / 100.0
+                if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
+                    base_quote += base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
+                final = float_round(base_quote, precision_digits=2)
+                line.price_quote = final
+                # Keep UI mirror in sync only if no manual override
+                if not line.manual_price_quote:
+                    line.display_price_quote = final
+            except Exception as e:
+                _logger.error(f"Error computing price_quote for line {line.id}: {e}")
+                line.price_quote = 0.0
+                if not line.manual_price_quote:
+                    line.display_price_quote = 0.0
 
-    def create(self, vals):
-        return super().create(vals)
+    @api.depends(
+        'manual_price_quote',
+        'price_quote',
+        'include_full_service_warranty',
+        'order_id.full_service_warranty_percentage',
+        'order_id.installments'
+    )
+    def _compute_effective_price_quote(self):
+        for line in self:
+            # Manual wins if set (your chosen behavior)
+            base = line.manual_price_quote or line.price_quote or 0.0
+            if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
+                base += base * (line.order_id.full_service_warranty_percentage / 100.0)
+            line.effective_price_quote = float_round(base, precision_digits=2)
 
-    def _prepare_invoice(self):
-        invoice_vals = super()._prepare_invoice()
-        if self.financing_agency_id:
-            invoice_vals['partner_id'] = self.financing_agency_id.id
-            invoice_vals['narration'] = f"Customer financed: {self.partner_id.name}"
-        return invoice_vals
+    @api.depends('effective_price_quote', 'product_uom_qty', 'currency_id')
+    def _compute_price_subtotal_custom(self):
+        for line in self:
+            subtotal = (line.effective_price_quote or 0.0) * (line.product_uom_qty or 0.0)
+            line.price_subtotal = float_round(subtotal, precision_rounding=line.currency_id.rounding)
+            # If you want price_total to mirror subtotal (no taxes here)
+            line.price_total = line.price_subtotal
 
-    @api.depends('amount_untaxed', 'amount_tax', 'amount_total', 'transport')
-    def _compute_tax_totals(self):
-        super(SaleOrder, self)._compute_tax_totals()
-
-        for order in self:
-            if not order.tax_totals:
-                continue
-
-            tax_totals = order.tax_totals.copy()
-
-            new_total = float_round(
-                order.amount_untaxed + order.amount_tax + order.transport,
-                precision_rounding=order.currency_id.rounding
+    @api.depends('effective_price_quote', 'product_uom_qty', 'tax_id')
+    def _compute_tax_id(self):
+        """Recompute taxes using the monthly final value as unit price."""
+        for line in self:
+            taxes = line.tax_id.compute_all(
+                line.effective_price_quote or 0.0,
+                currency=line.order_id.currency_id,
+                quantity=line.product_uom_qty or 0.0,
+                product=line.product_id,
+                partner=line.order_id.partner_shipping_id
+            )
+            line.price_tax = float_round(
+                taxes['total_included'] - taxes['total_excluded'],
+                precision_rounding=line.currency_id.rounding
             )
 
-            # Update raw amount
-            tax_totals['amount_total'] = new_total
+    # ---------- ONCHANGES (that DO fire) ----------
 
-            tax_totals['amount_untaxed'] = float_round(order.amount_untaxed, precision_rounding=order.currency_id.rounding)
+    @api.onchange('manual_price_quote')
+    def _onchange_manual_quote(self):
+        for line in self:
+            if line.manual_price_quote:
+                line.include_full_service_warranty = False
 
-            # Format it using babel
-            #formatted_total = format_currency(
-            #    new_total,
-            #    order.currency_id.name,
-            #    locale=self.env.context.get('lang') or 'en_US'
-            #)
+    @api.onchange('product_uom_qty', 'display_price_quote')
+    def _onchange_qty_or_quote(self):
+        # Re-evaluate derived values when user edits qty or the visible quote
+        self._compute_effective_price_quote()
+        self._compute_price_subtotal_custom()
 
-            formatted_total = format_currency(new_total, 'EUR', locale='fr_FR')
+    @api.onchange('include_full_service_warranty', 'order_id.full_service_warranty_percentage')
+    def _onchange_warranty_toggle(self):
+        for line in self:
+            if not line.manual_price_quote:
+                line._compute_price_quote()
+                line._compute_effective_price_quote()
+                line._compute_price_subtotal_custom()
 
-            tax_totals['formatted_amount_total'] = formatted_total
+    # ---------- INVOICE MAPPING ----------
 
-            order.tax_totals = tax_totals
-
-    def _create_invoices(self, grouped=False, final=False):
-        invoices = super()._create_invoices(grouped=grouped, final=final)
-        for order in self:
-            for invoice in invoices:
-                if order.financing_agency_id:
-                    invoice.financing_agency_id = order.financing_agency_id.id
-                    if order.partner_id:
-                        invoice.narration = f"{order.partner_id.name}"
-                        _logger.info(f"Narration set in _create_invoices: {invoice.narration}")
-        return invoices
+    def _prepare_invoice_line(self, **optional_values):
+        res = super()._prepare_invoice_line(**optional_values)
+        res.update({
+            'include_full_service_warranty': self.include_full_service_warranty,
+            # bill the total over the whole period: monthly final * installments
+            'price_unit': (self.effective_price_quote or 0.0) * int(self.order_id.installments or '24'),
+            'product_list_price': self.product_id.list_price or 0.0,
+            'tax_ids': [(6, 0, [])],  # adjust to your tax policy
+        })
+        return res
