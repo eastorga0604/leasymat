@@ -108,7 +108,7 @@ class SaleOrderLine(models.Model):
 
     # Compute effective price quote
     @api.depends('manual_price_quote', 'price_quote', 'include_full_service_warranty',
-                 'order_id.full_service_warranty_percentage')
+                 'order_id.full_service_warranty_percentage', 'order_id.installments')
     def _compute_effective_price_quote(self):
         for line in self:
             base = 0.0
