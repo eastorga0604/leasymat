@@ -3,63 +3,54 @@
   <template id="sale_order_portal_content_inherit_custom"
             inherit_id="sale.sale_order_portal_content">
 
-  <xpath expr="//section[@id='details']" position="before">
-    <style>
-      /* Hide second span inside td.text-end in portal quantity column */
-      table#sales_order_table td.text-end span:nth-of-type(2) {
-        display: none !important;
-      }
-    </style>
-  </xpath>
+    <!-- 1) (Keep) your CSS tweak -->
+    <xpath expr="//section[@id='details']" position="before">
+      <style>
+        /* optional from your file */
+        table#sales_order_table td.text-end span:nth-of-type(2) { display: none !important; }
 
-    <!-- Change header label -->
-    <xpath expr="//th[contains(., 'Unit Price')]" position="replace">
-      <th style="text-align: right">Monthly Quote</th>
+        /* 2) Hide TAXES column robustly via IDs (no XPath replace) */
+        /* These IDs exist on standard portal rows; if your theme renamed them,
+           replace with your actual ids/classes (view raw HTML to confirm). */
+        #sales_order_table th#taxes_header,
+        #sales_order_table td#taxes {
+          display: none !important;
+        }
+      </style>
     </xpath>
 
-    <!-- Replace unit price cell -->
-    <xpath expr="//div[@t-field='line.price_unit']" position="replace">
-      <div t-field="line.effective_price_quote"
-           t-options='{"widget": "monetary", "display_currency": line.order_id.currency_id}'/>
+    <!-- 3) Replace the *body* unit price with monthly (tolerant selector) -->
+    <xpath expr="//*[@t-field='line.price_unit' or @t-esc='line.price_unit']"
+           position="replace">
+      <span t-field="line.effective_price_quote"
+            t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
     </xpath>
 
-
-    <xpath expr="//th[@id='taxes_header']" position="replace">
-      <th t-if="False"/>
+    <!-- 4) Rename the header to “Devis mensuel” via a tiny JS (no brittle xpath) -->
+    <xpath expr="//table[@id='sales_order_table']" position="after">
+      <script type="text/javascript"><![CDATA[
+        document.addEventListener('DOMContentLoaded', function () {
+          var table = document.getElementById('sales_order_table');
+          if (!table) return;
+          var heads = table.querySelectorAll('thead th.text-end');
+          if (heads && heads[1]) {
+            heads[1].textContent = 'Devis mensuel';
+          }
+        });
+      ]]></script>
     </xpath>
 
-    <xpath expr="//td[@id='taxes']" position="replace">
-      <td t-if="False"/>
-    </xpath>'
-
-
-
-    <xpath expr="//td[@id='subtotal']" position="after">
-      <tr>
-        <td t-if="line.include_full_service_warranty" class="text-start small" t-translate="Includes Full Warranty">
-          Includes Full Warranty
-        </td>
-        <td t-else="line.include_full_service_warranty" class="text-start small" t-translate="Includes Standard Warranty">
-          Includes Standard Warranty
-        </td>
-        <td class="text-end"/>
-        <td class="text-end"/>
-        <td class="text-end"/>
-      </tr>
-    </xpath>
-
-    <xpath expr="//div[@id='total']//div[@class='col-xs-7 col-md-5 ms-auto']" position="inside">
+    <!-- 5) Totals block (your lines) -->
+    <xpath expr="//div[@id='total']//div[contains(@class,'ms-auto')]" position="inside">
       <div class="d-flex justify-content-between mb-1">
-          <span t-translate="IVA (20%):">IVA (20%):</span>
-          <span t-field="sale_order.amount_vat_20"/>
+        <span t-translate="yes">IVA (20%):</span>
+        <span t-field="sale_order.amount_vat_20"/>
       </div>
       <div class="d-flex justify-content-between">
-          <strong t-translate="Total Incl. IVA:">Total Incl. IVA:</strong>
-          <strong t-field="sale_order.amount_total_incl_vat_20"/>
+        <strong t-translate="yes">Total Incl. IVA:</strong>
+        <strong t-field="sale_order.amount_total_incl_vat_20"/>
       </div>
-  </xpath>
-
-
+    </xpath>
 
   </template>
 </odoo>
