@@ -69,7 +69,9 @@ class SaleOrderLine(models.Model):
             total = (line.price_unit or 0.0) * 2.1
             months = str(line.order_id.installments or '24')
 
-            if 500 <= total < 1500:
+            print(f"Computing price_quote for line {line.id}: price_unit={line.price_unit}, total={total}, months={months}")
+
+            if total < 1500:
                 palier = 'palier-500'
             elif 1500 <= total < 5000:
                 palier = 'palier-1-500'
