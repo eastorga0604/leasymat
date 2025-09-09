@@ -67,6 +67,7 @@ class WooCommerceAPIController(http.Controller):
                     'product_id': odoo_product.id,
                     'product_uom_qty': qty,
                     'price_unit': odoo_product.lst_price,
+                    'price_quote': manual_quote if manual_quote > 0 else 0.0,
                     'display_price_quote': manual_quote if manual_quote > 0 else 0.0
                 }
 

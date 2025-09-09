@@ -127,15 +127,15 @@
               </li>
             </t>
             <t t-else="">
-              <li><span t-field="company.name"/></li>
+              <li><span t-field="company.partner_id.name"/></li>
               <li><span t-field="company.partner_id.contact_address"/></li>
               <li>
                 Téléphone :
-                <span t-field="company.phone"/>
+                <span t-field="company.partner_id.phone"/>
               </li>
               <li>
                 Email :
-                <span t-field="company.email"/>
+                <span t-field="company.partner_id.email"/>
               </li>
               <li>
                 Siren :
