@@ -127,19 +127,19 @@
               </li>
             </t>
             <t t-else="">
-              <li><span t-field="company.partner_id.name"/></li>
-              <li><span t-field="company.partner_id.contact_address"/></li>
+              <li><span t-field="o.partner_id.name"/></li>
+              <li><span t-field="o.partner_id.contact_address"/></li>
               <li>
                 Téléphone :
-                <span t-field="company.partner_id.phone"/>
+                <span t-field="o.partner_id.phone"/>
               </li>
               <li>
                 Email :
-                <span t-field="company.partner_id.email"/>
+                <span t-field="o.partner_id.email"/>
               </li>
               <li>
                 Siren :
-                <span t-field="company.partner_id.siren"/>
+                <span t-field="o.partner_id.siren"/>
               </li>
             </t>
           </ul>
