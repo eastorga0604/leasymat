@@ -10,14 +10,10 @@
       <xpath expr="//field[@name='partner_id']" position="attributes">
         <attribute name="invisible">1</attribute>
       </xpath>
-      <xpath expr="//label[@for='partner_id']" position="attributes">
-        <attribute name="string">Financing Agency</attribute>
-      </xpath>
-
-
-      <!-- Add Financing Agency after Customer -->
-      <xpath expr="//field[@name='partner_id']" position="after">
-        <field name="financing_agency_id" string="Financing Agency"/>
+      <!-- Replace Customer Label with Financing Agency + add Invoice Title label -->
+      <xpath expr="//label[@for='partner_id']" position="replace">
+        <field name="financing_agency_id"/>
+        <field name="invoice_title"/>
       </xpath>
 
     </field>

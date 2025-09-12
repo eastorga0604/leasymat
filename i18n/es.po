@@ -228,3 +228,14 @@ msgstr "Descripción"
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_move_form_inherit_financing
 msgid "Financing Agency"
 msgstr "Agencia de Financiamiento"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_account_move__financing_agency_id
+msgid "Financing Agency"
+msgstr "Agencia de Financiamiento"
+
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_account_move__invoice_title
+msgid "Invoice Title"
+msgstr "Titulo"

@@ -29,6 +29,8 @@ class AccountMove(models.Model):
         ondelete='set null'
     )
 
+    invoice_title = fields.Char(string="Invoice Title", help="Custom title for the invoice.", default="Facture")
+
     def _compute_custom_display_number(self):
         for record in self:
             if not record.invoice_date:
