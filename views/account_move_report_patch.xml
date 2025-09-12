@@ -59,9 +59,8 @@
 
     <xpath expr="//h2" position="replace">
       <h2>
-        <t t-if="o.invoice_title">
-          <span class="ms-2">— <span t-field="o.invoice_title"/></span>
-        </t>
+        <span t-esc="o.invoice_title or (o.move_type == 'out_invoice' and 'Facture' or 'Devis')"/>
+        <span> </span>
         <span t-field="o.custom_display_number"/>
       </h2>
     </xpath>
