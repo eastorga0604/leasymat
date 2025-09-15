@@ -66,29 +66,32 @@ class SaleOrderLine(models.Model):
     )
     def _compute_price_quote(self):
         for line in self:
-            total = (line.price_unit or 0.0) * 2.1
-            months = str(line.order_id.installments or '24')
+            total = (line.price_unit or 0.0) * 2.2
+            months = int(line.order_id.installments or 24)
+
+            rate = 0.05 / 12.0
 
             print(f"Computing price_quote for line {line.id}: price_unit={line.price_unit}, total={total}, months={months}")
 
-            if total < 1500:
-                palier = 'palier-500'
-            elif 1500 <= total < 5000:
-                palier = 'palier-1-500'
-            elif 5000 <= total < 8000:
-                palier = 'palier-5-000'
-            elif 8000 <= total < 12000:
-                palier = 'palier-8-000'
-            elif 12000 <= total < 20000:
-                palier = 'palier-12-000'
-            elif 20000 <= total < 1000000:
-                palier = 'palier-20-000'
-            else:
-                palier = 'palier-1-000-000'
+            #if total < 1500:
+            #    palier = 'palier-500'
+            #elif 1500 <= total < 5000:
+            #    palier = 'palier-1-500'
+            #elif 5000 <= total < 8000:
+            #    palier = 'palier-5-000'
+            #elif 8000 <= total < 12000:
+            #    palier = 'palier-8-000'
+            #elif 12000 <= total < 20000:
+            #    palier = 'palier-12-000'
+            #elif 20000 <= total < 1000000:
+            #    palier = 'palier-20-000'
+            #else:
+            #    palier = 'palier-1-000-000'
 
             try:
-                coef = PALIER_COEFFICIENTS[palier][months]
-                base_quote = (total * coef) / 100.0
+                #coef = PALIER_COEFFICIENTS[palier][months]
+                #base_quote = (total * coef) / 100.0
+                base_quote = (total + (total * rate * months)) / months;
                 if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
                     base_quote += base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
                 final = float_round(base_quote, precision_digits=2)
