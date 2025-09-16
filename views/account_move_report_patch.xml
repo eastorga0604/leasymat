@@ -2,6 +2,13 @@
 <odoo>
   <template id="report_invoice_document_inherit_warranty" inherit_id="account.report_invoice_document">
 
+    <xpath expr="//t[@t-set='forced_vat']" position="after">
+      <style>
+        /* Hide the blue 'Operation Type' strip injected by other modules */
+        div[name='operation_type'] { display: none !important; }
+      </style>
+    </xpath>
+
     <!-- Force report language context to French -->
     <xpath expr="//t[@t-set='o']" position="replace">
         <t t-set="o" t-value="o.with_context(lang='fr_FR')"/>
@@ -28,7 +35,6 @@
     <xpath expr="//div[@name='origin']" position="replace">
       <div t-if="False"/>
     </xpath>
-
     <xpath expr="//strong[contains(text(), 'Invoice Date')]" position="replace">
       <strong>Date:</strong>
     </xpath>
