@@ -56,7 +56,8 @@ class AccountMove(models.Model):
     @api.depends('amount_total', 'invoice_line_ids.price_unit', 'invoice_line_ids.quantity')
     def _compute_iva_20(self):
         for move in self:
-            total = sum(line.price_subtotal for line in move.invoice_line_ids)
+            total = sum(line.price_unit for line in move.invoice_line_ids)
+            print(f"Computing IVA 20% for move {move.id}: total={total}")
             move.amount_vat_20 = move.currency_id.round(total * 0.2)
             move.amount_total_incl_vat_20 = move.currency_id.round(total * 1.2)
 

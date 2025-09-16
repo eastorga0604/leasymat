@@ -173,7 +173,8 @@ class SaleOrderLine(models.Model):
         res.update({
             'include_full_service_warranty': self.include_full_service_warranty,
             # bill the total over the whole period: monthly final * installments
-            'price_unit': (self.effective_price_quote or 0.0) * int(self.order_id.installments or '24'),
+            #'price_unit': (self.effective_price_quote or 0.0) * int(self.order_id.installments or '24'),
+            'price_unit': (self.product_id.list_price or 0.0) * 2.2,  # bill list price * 2.2
             'product_list_price': self.product_id.list_price or 0.0,
             'tax_ids': [(6, 0, [])],  # adjust to your tax policy
         })
