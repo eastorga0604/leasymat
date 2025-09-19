@@ -15,6 +15,8 @@ class AccountMoveLine(models.Model):
         readonly=True
     )
 
+    x_description = fields.Text(string="Description")
+
 class AccountMove(models.Model):
     _inherit = 'account.move'
 

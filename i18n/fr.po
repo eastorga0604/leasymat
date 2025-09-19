@@ -243,3 +243,8 @@ msgstr "Agence de financement"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_account_move__invoice_title
 msgid "Invoice Title"
 msgstr "Titre"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_account_move_line__x_description
+msgid "Description"
+msgstr "Description"

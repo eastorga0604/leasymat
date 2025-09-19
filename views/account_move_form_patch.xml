@@ -16,6 +16,14 @@
         <field name="invoice_title"/>
       </xpath>
 
+      <xpath expr="//tree/field[@name='name']" position="after">
+        <field name="x_description"
+               string="Description"
+               widget="text"
+               optional="show"
+               style="min-width:320px"/>
+      </xpath>
+
     </field>
   </record>
 </odoo>
