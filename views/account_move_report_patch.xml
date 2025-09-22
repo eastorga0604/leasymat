@@ -97,7 +97,13 @@
 
     <xpath expr="//table[@name='invoice_line_table']//thead//tr//th[@name='th_description']" position="after">
       <!-- If you prefer French (you force fr_FR above), use 'Fournisseur' -->
-      <th name="th_provider" class="text-start"><span>Fournisseur</span></th>
+      <th name="th_provider" class="text-start"><span>Description</span></th>
+      <!-- <th name="th_provider" class="text-start"><span>Fournisseur</span></th> -->
+    </xpath>
+
+    <xpath expr="//table[@name='invoice_line_table']//thead//tr//th[@name='th_description']" position="replace">
+      <!-- If you prefer French (you force fr_FR above), use 'Fournisseur' -->
+      <th name="th_description" class="text-start"><span>Produit</span></th>
       <!-- <th name="th_provider" class="text-start"><span>Fournisseur</span></th> -->
     </xpath>
 
