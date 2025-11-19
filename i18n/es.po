@@ -244,3 +244,13 @@ msgstr "Titulo"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_account_move_line__x_description
 msgid "Description"
 msgstr "Descripción"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__discount
+msgid "Discount"
+msgstr "Descuento (%)"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Discount"
+msgstr "Descuento (%)"

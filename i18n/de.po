@@ -43,3 +43,13 @@ msgstr "Marge (€)"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__margin_percent
 msgid "Margin (%)"
 msgstr "Marge (%)"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__discount
+msgid "Discount"
+msgstr "Rabatt (%)"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Discount"
+msgstr "Rabatt (%)"

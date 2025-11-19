@@ -57,6 +57,7 @@ msgstr "Agence de financement"
 msgid "Include Warranty"
 msgstr "Inclure la garantie"
 
+
 #. module: custom_woocommerce_api
 #: model:ir.model,name:custom_woocommerce_api.model_crm_lead
 msgid "Lead/Opportunity"
@@ -71,6 +72,11 @@ msgstr "Gérer les agences"
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
 msgid "Monthly Quote"
 msgstr "Devis mensuel"
+
+#. module: custom_woocommerce_api
+#: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
+msgid "Discount"
+msgstr "Remise (%)"
 
 #. module: custom_woocommerce_api
 #: model_terms:ir.ui.view,arch_db:custom_woocommerce_api.view_order_form_installments
@@ -96,6 +102,11 @@ msgstr "Ligne de commande client"
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__price_subtotal
 msgid "Subtotal"
 msgstr "Sous-total"
+
+#. module: custom_woocommerce_api
+#: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order_line__discount
+msgid "Discount"
+msgstr "Remise (%)"
 
 #. module: custom_woocommerce_api
 #: model:ir.model.fields,field_description:custom_woocommerce_api.field_sale_order__amount_tax
