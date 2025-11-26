@@ -42,7 +42,7 @@
                 <field name="effective_price_quote" string="Monthly Quote" readonly="1"/>
                 <field name="manual_price_quote" string="Manual Quote"/>
                 <field name="include_full_service_warranty" string="Include Warranty"/>
-                <field name="discount" string="Discount" readonly="1"/>
+                <field name="discount_price" string="Discount"/>
             </xpath>
 
             <!-- Hide original price_unit in tree view -->

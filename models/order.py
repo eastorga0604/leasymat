@@ -56,7 +56,7 @@ class SaleOrderLine(models.Model):
         store=True
     )
 
-    discount = fields.Float(string='Discount (%)', default=100.0, store=True)
+    discount_price = fields.Float(string='Discount (%)', default=0.0, store=True)
 
     # ---------- COMPUTES ----------
 
@@ -96,7 +96,10 @@ class SaleOrderLine(models.Model):
                 base_quote = (total + (total * rate * months)) / months;
                 if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
                     base_quote += base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
-                final = float_round(base_quote, precision_digits=2) * (line.discount / 100.0)
+                discount_percent = 1
+                if line.discount_price and line.discount_price > 0.0:
+                    discount_percent = line.discount_price / 100.0
+                final = float_round(base_quote, precision_digits=2) * discount_percent
                 line.price_quote = final
                 # Keep UI mirror in sync only if no manual override
                 if not line.manual_price_quote:

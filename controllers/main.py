@@ -25,7 +25,7 @@ class WooCommerceAPIController(http.Controller):
 
             # price_quote from metadata (manual override per month)
 
-            discount = metadata.get('price_discount_percent', 100.0) or 100.0
+            discount = metadata.get('price_discount_percent', 0.0) or 0.0
             try:
                 manual_quote = float(metadata.get('price_quote', 0.0)) if metadata.get('price_quote') not in (None, '') else 0.0
             except (TypeError, ValueError):
@@ -71,7 +71,7 @@ class WooCommerceAPIController(http.Controller):
                     'price_unit': odoo_product.lst_price,
                     'price_quote': manual_quote if manual_quote > 0 else 0.0,
                     'display_price_quote': manual_quote if manual_quote > 0 else 0.0,
-                    'discount': discount
+                    'discount_price': discount or 0.0
                 }
 
                 request.env['sale.order.line'].sudo().create(line_vals)
