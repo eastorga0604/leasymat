@@ -25,7 +25,7 @@ class WooCommerceAPIController(http.Controller):
 
             # price_quote from metadata (manual override per month)
 
-            discount = metadata.get('price_discount_percent', 0.0) or 0.0
+            discount = metadata.get('price_discount', 0.0) or 0.0
             try:
                 manual_quote = float(metadata.get('price_quote', 0.0)) if metadata.get('price_quote') not in (None, '') else 0.0
             except (TypeError, ValueError):
