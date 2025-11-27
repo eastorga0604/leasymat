@@ -75,21 +75,6 @@ class SaleOrderLine(models.Model):
 
             print(f"Computing price_quote for line {line.id}: price_unit={line.price_unit}, total={total}, months={months}")
 
-            #if total < 1500:
-            #    palier = 'palier-500'
-            #elif 1500 <= total < 5000:
-            #    palier = 'palier-1-500'
-            #elif 5000 <= total < 8000:
-            #    palier = 'palier-5-000'
-            #elif 8000 <= total < 12000:
-            #    palier = 'palier-8-000'
-            #elif 12000 <= total < 20000:
-            #    palier = 'palier-12-000'
-            #elif 20000 <= total < 1000000:
-            #    palier = 'palier-20-000'
-            #else:
-            #    palier = 'palier-1-000-000'
-
             try:
                 #coef = PALIER_COEFFICIENTS[palier][months]
                 #base_quote = (total * coef) / 100.0
