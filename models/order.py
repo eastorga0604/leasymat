@@ -96,10 +96,12 @@ class SaleOrderLine(models.Model):
                 base_quote = (total + (total * rate * months)) / months;
                 if line.include_full_service_warranty and line.order_id.full_service_warranty_percentage:
                     base_quote += base_quote * (line.order_id.full_service_warranty_percentage / 100.0)
-                discount_percent = 1
                 if line.discount_price and line.discount_price > 0.0:
-                    discount_percent = line.discount_price / 100.0
-                final = float_round(base_quote, precision_digits=2) * discount_percent
+                    discount_precent = line.discount_price / 100.0
+                    discount_value = float_round(base_quote, precision_digits=2) * discount_precent
+                    final = float_round(base_quote, precision_digits=2) - discount_value
+                else:
+                    final = float_round(base_quote, precision_digits=2)
                 line.price_quote = final
                 # Keep UI mirror in sync only if no manual override
                 if not line.manual_price_quote:
