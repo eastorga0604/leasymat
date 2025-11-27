@@ -23,13 +23,7 @@ class WooCommerceAPIController(http.Controller):
             if installments not in {'12', '24', '36', '48', '60'}:
                 installments = '24'  # default safe fallback
 
-            # price_quote from metadata (manual override per month)
 
-            discount = metadata.get('price_discount', 0.0) or 0.0
-            try:
-                manual_quote = float(metadata.get('price_quote', 0.0)) if metadata.get('price_quote') not in (None, '') else 0.0
-            except (TypeError, ValueError):
-                manual_quote = 0.0
 
             if not customer_data or not products_data:
                 return {"status": "error", "message": "Missing required fields: customer or products"}
@@ -64,6 +58,16 @@ class WooCommerceAPIController(http.Controller):
                 if not odoo_product:
                     return {"status": "error", "message": f"Product with SKU {sku} not found"}
 
+                discount = float((p or {}).get('price_discount', 0.0)) if (p or {}).get('price_discount') not in (None, '') else 0.0
+
+                # price_quote from metadata (manual override per month)
+                try:
+                    manual_quote = float((p or {}).get('price_quote', 0.0)) if (p or {}).get('price_quote') not in (
+                    None, '') else 0.0
+                except (TypeError, ValueError):
+                    manual_quote = 0.0
+
+
                 line_vals = {
                     'order_id': sale_order.id,
                     'product_id': odoo_product.id,
@@ -71,7 +75,7 @@ class WooCommerceAPIController(http.Controller):
                     'price_unit': odoo_product.lst_price,
                     'price_quote': manual_quote if manual_quote > 0 else 0.0,
                     'display_price_quote': manual_quote if manual_quote > 0 else 0.0,
-                    'discount_price': discount or 0.0
+                    'discount_price': discount
                 }
 
                 request.env['sale.order.line'].sudo().create(line_vals)
